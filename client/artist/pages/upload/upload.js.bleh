@@ -1,0 +1,198 @@
+app.controller("uploadController", ["$scope", "$http", "$timeout", function($scope, $http, $timeout) {
+
+  $scope.name = '';
+  $scope.templates = [];
+
+  var svgInput = document.createElement("input");
+  svgInput.id = "svgInput";
+  svgInput.type = "file";
+  svgInput.accept = ".svg";
+  svgInput.style.display = "none";
+  svgInput.onchange = handleFileChosen;
+  document.body.appendChild(svgInput);
+
+  var jpgInput = document.createElement("input");
+  jpgInput.id = "svgInput";
+  jpgInput.type = "file";
+  jpgInput.accept = ".jpg";
+  jpgInput.style.display = "none";
+  jpgInput.onchange = handleThumbnailChosen;
+  document.body.appendChild(jpgInput);
+
+  $scope.openFileBrowser = function() {
+    var input = document.getElementById('svgInput');
+    input.click();
+  }
+
+  $scope.openThumbnailBrowser = function() {
+    var input = document.getElementById('jpgInput');
+    input.click();
+  }
+
+  $scope.loadCompatibleProducts = function(template) {
+    $http.post(API_URL + "/Product/get_products_by_aspect", {
+      aspectRatio: template.aspectRatio
+    }).then(function(response) {
+      var products = response.data.results;
+      var productMediums = [];
+      products.forEach(function(p, index) {
+        if (!index || productMediums[productMediums.length-1].medium != p.medium) {
+          productMediums.push({
+            medium: p.medium,
+            products: []
+          });
+        }
+        productMediums[productMediums.length-1].products.push(p);
+      });
+      template.productGroups = productMediums;
+    }, function(error) {
+      console.error(error);
+    });
+  }
+
+  $scope.submitTemplate = function() {
+    var templates = $scope.templates.map(function(template) {
+      var templateProducts = [];
+      template.productGroups.forEach(function(productGroup) {
+        var products = productGroup.products.map(function(p) {
+          return p.isSelected ? p.sku : null;
+        }).filter(function(p) {
+          return p != null;
+        });
+        templateProducts = templateProducts.concat(products);
+      })
+      return {
+        svgFile: template.svgFile,
+        aspectRatio: template.aspectRatio,
+        filename: template.filename,
+        products: templateProducts
+      };
+    });
+    $http.post(API_URL + "/Template/upload_template", {
+      name: $scope.name,
+      thumbnail: $scope.thumbnail,
+      templateFiles: templates
+    }).then(function(response) {
+      console.log(response);
+    }, function(error) {
+      console.error(error);
+    });
+  }
+
+  $scope.getMediumDisplayName = function(medium) {
+    switch (medium) {
+      case 'photo':
+        return 'Photo prints';
+      case 'canvas':
+        return 'Gallery wrapped canvases';
+      case 'poster':
+        return 'Posters';
+      case 'canvasposter':
+        return 'Canvas posters';
+      default:
+        return medium;
+    }
+  }
+
+
+
+  function handleThumbnailChosen(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function() {
+      $scope.thumbnail = reader.result;
+      $scope.$apply();
+    }
+    reader.readAsDataURL(file);
+  }
+
+  function handleFileChosen(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function() {
+      var svgString = reader.result;
+      var template = {
+        svgFile: btoa(svgString),
+        filename: file.name,
+        artboardId: 'artboard' + $scope.templates.length
+      };
+      $scope.templates.push(template);
+
+      $timeout(function() {
+        var artboard = document.getElementById(template.artboardId);
+        artboard.innerHTML = svgString;
+        template.svgElement = findSvgInDOM(artboard);
+
+        resizeSvgToFitArtboard(template.svgElement, artboard);
+
+        template.aspectRatio = getAspectRatioOfSvg(template.svgElement);
+
+        if (templateHasUniqueAspectRatio(template)) {
+          $scope.loadCompatibleProducts(template);
+        }
+        else {
+          $scope.templates.splice($scope.templates.indexOf(template), 1);
+        }
+      }, 0);
+      $scope.$apply();
+    }
+    reader.readAsText(file);
+  }
+
+  function templateHasUniqueAspectRatio(template) {
+    var existingTemplate = $scope.templates.find(function(t) {
+      return t.aspectRatio == template.aspectRatio && t != template;
+    });
+    return existingTemplate ? false : true;
+  }
+
+  function findSvgInDOM(element) {
+    if (element.tagName == 'svg') {
+      return element;
+    }
+    if (element.childNodes) {
+      for (var i=0; i < element.childNodes.length; i++) {
+        var el = findSvgInDOM(element.childNodes[i]);
+        if (el) {
+          return el;
+        }
+      }
+    }
+    return null;
+  }
+
+  function resizeSvgToFitArtboard(svgElement, artboard) {
+    var svgwidth = parseFloat(svgElement.getAttribute('width'));
+    var svgheight = parseFloat(svgElement.getAttribute('height'));
+    var svgaspect = svgwidth / svgheight;
+    var artboardaspect = artboard.offsetWidth / artboard.offsetHeight;
+
+    var newSvgSize = {
+      width: artboard.offsetWidth,
+      height: artboard.offsetHeight
+    };
+
+    if (svgaspect > artboardaspect) {
+      newSvgSize.height = newSvgSize.width / svgaspect;
+    }
+    else {
+      newSvgSize.width = newSvgSize.height * svgaspect;
+    }
+
+    svgElement.style.width = newSvgSize.width + "px";
+    svgElement.style.height = newSvgSize.height + "px";
+  }
+
+  function getAspectRatioOfSvg(svgElement) {
+    var svgSize = {
+      width: parseFloat(svgElement.getAttribute('width')) || svgElement.getAttribute('viewBox').split(' ')[2],
+      height: parseFloat(svgElement.getAttribute('height')) || svgElement.getAttribute('viewBox').split(' ')[3]
+    };
+    var longestSide = Math.max(svgSize.width, svgSize.height);
+    var shortestSide = Math.min(svgSize.width, svgSize.height);
+    var aspectRatio = (longestSide / shortestSide).toFixed(3);
+    console.log(aspectRatio);
+    return aspectRatio;
+  }
+
+}]);

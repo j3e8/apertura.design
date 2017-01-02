@@ -1,0 +1,135 @@
+<div class="content cart-page">
+
+  <h1>Shopping Cart</h1>
+
+  <section class="breathe">
+    <div class="headings">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          Product
+        </div>
+        <div class="row__cell qty-cell">
+          Qty
+        </div>
+        <div class="row__cell price-cell">
+          Price ea.
+        </div>
+        <div class="row__cell delete-cell">
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-item" ng-repeat="item in cart.items">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell img-cell">
+          <svg-thumbnail guid="item.guid"></svg-thumbnail>
+          <!--<div class="overlay" ng-hide="item.isUploaded">
+            <wait-indicator></wait-indicator>
+            <div>Processing image...</div>
+          </div>-->
+        </div>
+        <div class="row__cell name-cell">
+          <div class="name">
+            {{ item.name }}
+            <div class="breathe status" ng-show="item.status">
+              <i>{{ item.status }}</i>
+            </div>
+          </div>
+        </div>
+        <div class="row__cell qty-cell">
+          <input type="number" ng-model="item.qty" ng-change="updateQuantity(item)">
+        </div>
+        <div class="row__cell price-cell">
+          {{ item.price | currency:'$' }}
+        </div>
+        <div class="row__cell delete-cell">
+          <span class="icon icon-delete clickable" ng-click="toggleRemoveItemConfirmation(item)"></span>
+        </div>
+      </div>
+      <div class="confirm-delete" ng-show="item.isRemoveItemConfirmationDisplayed">
+        Are you sure you want to remove this project from your order?
+        <div>
+          <button class="sm yellow" ng-click="removeItem(item)">Yes</button>
+          <button class="sm cancel white" ng-click="toggleRemoveItemConfirmation(item)">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="shipping">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          Shipping <i class="text-sm">(U.S. only)</i>
+          <div>
+            Estimated arrival: <i>{{ cart.timeframe }} days</i>
+          </div>
+        </div>
+        <div class="row__cell row__cell--fixed">
+          <input type="text" class="zip" ng-model="cart.shipZip" placeholder="Postal code">
+          <button class="sm" ng-click="loadShippingQuote()">Go</button>
+        </div>
+        <div class="row__cell price-cell">
+          <span ng-show="cart.shipping">{{ cart.shipping | currency:'$' }}</span>
+          <span ng-show="cart.shipping === 0">FREE</span>
+          <wait-indicator ng-show="shippingIsLoading"></wait-indicator>
+        </div>
+        <div class="row__cell delete-cell">
+        </div>
+      </div>
+    </div>
+
+    <div class="discount">
+      <div class="row row--spaced row--vertical-center" ng-hide="cart.discountCode">
+        <div class="row__cell">
+          <div ng-hide="cart.discountCode">
+            <div class="discount-label">Use a promo code</div>
+            <input class="discount-input" type="text" ng-model="newDiscountCode" ng-keypress="catchEnter($event)">
+            <button class="sm" ng-click="applyDiscountCode()">Add</button>
+          </div>
+        </div>
+        <div class="row__cell price-cell">
+          <span class="discount-amount">
+            -
+          </span>
+        </div>
+        <div class="row__cell delete-cell">
+        </div>
+      </div>
+
+      <div class="row row--spaced row--vertical-center" ng-show="cart.discountCode">
+        <div class="row__cell">
+          <div>
+            <div class="discount-code">{{ cart.discountCode }}</div>
+            <div>{{ cart.discountDescription }}</div>
+          </div>
+        </div>
+        <div class="row__cell price-cell">
+          <span class="discount-amount">
+            {{ -cart.discount | currency:'$' }}
+          </span>
+        </div>
+        <div class="row__cell delete-cell">
+          <span class="icon icon-delete clickable" ng-click="removeDiscountCode()"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="total">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          <b>Total</b>
+        </div>
+        <div class="row__cell price-cell">
+          <b>{{ cart.total | currency:'$' }}</b>
+        </div>
+        <div class="row__cell delete-cell">
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="breathe text-right">
+    <button ng-click="continueCheckout()">Checkout</button>
+  </section>
+
+</div>

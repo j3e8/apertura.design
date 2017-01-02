@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="864px" height="1296px" viewBox="0 0 864 1296" enable-background="new 0 0 864 1296" xml:space="preserve">
+<rect id="fill-stripe" y="700.666" fill="#B7694C" width="864" height="64.834"/>
+<polygon id="photo-topleft" fill="#CCCCCC" points="0,0 453,0 453,679.5 0,682.166 "/>
+<polygon id="fill-topleft" fill="#385F5B" points="0,224.537 0,0 149.691,0 "/>
+<rect id="photo-topright" x="470.5" fill="#CCCCCC" width="393.5" height="679.5"/>
+<rect id="photo-bottom" y="784" fill="#CCCCCC" width="864" height="512"/>
+<circle fill="#FFFFFF" cx="573.25" cy="708.322" r="221.693"/>
+<circle id="photo-circle" fill="#CCCCCC" cx="573.25" cy="708.322" r="201.757"/>
+<polygon fill="#F5F5F5" points="168.167,0 0,253.5 0,224.537 149.691,0 "/>
+<polygon id="fill-bottomright" fill="#385F5B" points="864,1071.463 864,1296 714.31,1296 "/>
+<polygon fill="#F5F5F5" points="695.833,1296 864,1042.5 864,1071.463 714.31,1296 "/>
+</svg>

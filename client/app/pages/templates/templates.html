@@ -1,0 +1,106 @@
+<div class="content templates-page">
+
+  <div class="promotion-banner" ng-show="promo != null">
+    <div class="row row--wrap row--vertical-center">
+      <div class="row__cell">
+    		Save {{ promo.pctDiscount * 100 }}% right now with promo code: <b>{{ promo.code }}</b>
+      </div>
+      <div class="row__cell row__cell--fixed promotion-ends text-right">
+        <i>Must use promo code in shopping cart</i><br>
+        <i>Offer ends {{ promo.ends | date:'M/d/yyyy' }}</i>
+      </div>
+    </div>
+  </div>
+
+    <div class="constrain">
+      <h1>Design Templates</h1>
+      <div class="instructions">
+        Choose a design to customize with your own pictures and order
+        prints, canvases or posters in minutes.
+      </div>
+    </div>
+
+    <div class="constrain breathe" ng-if="false">
+      <div class="row row--spaced row--wrap" id="how-it-works">
+        <div class="row__cell green-bg white">
+          <div class="column column--spaced">
+            <div class="column__cell column__cell--fixed text-center">
+              <img class="step" src="/app/assets/images/howitworks/stepone.png">
+            </div>
+            <div class="column__cell text-center">
+              <h3>Choose a template</h3>
+            </div>
+            <div class="column__cell column__cell--fixed text-center illustration-cell">
+              <img class="illustration" src="/app/assets/images/howitworks/choose_template.png">
+            </div>
+          </div>
+        </div>
+        <div class="row__cell green-bg white">
+          <div class="column column--spaced">
+            <div class="column__cell column__cell--fixed text-center">
+              <img class="step" src="/app/assets/images/howitworks/steptwo.png">
+            </div>
+            <div class="column__cell text-center">
+              <h3>Add your photos</h3>
+            </div>
+            <div class="column__cell column__cell--fixed text-center illustration-cell">
+              <img class="illustration" src="/app/assets/images/howitworks/add_photos.png">
+            </div>
+          </div>
+        </div>
+        <div class="row__cell green-bg white">
+          <div class="column column--spaced">
+            <div class="column__cell column__cell--fixed text-center">
+              <img class="step" src="/app/assets/images/howitworks/stepthree.png">
+            </div>
+            <div class="column__cell text-center">
+              <h3>Order canvases and posters</h3>
+            </div>
+            <div class="column__cell column__cell--fixed text-center illustration-cell">
+              <img class="illustration" src="/app/assets/images/howitworks/order_prints.png">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="breathe constrain">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          <input type="text" ng-model="searchText" ng-keypress="catchEnter($event)" ng-change="searchChanged()">
+        </div>
+        <div class="row__cell row__cell--fixed">
+          <button ng-click="search()">Search</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="breathe" ng-show="templates.length">
+      <div class="row row--spaced row--wrap">
+        <div class="row__cell template-cell" ng-repeat="t in templates">
+          <a ng-href="template/{{ t.id }}">
+            <div class="img-container">
+              <img ng-src="assets/templates/thumbnail/{{ t.id }}.jpg">
+            </div>
+            <div class="template-name">{{ t.name }}</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="text-center" ng-show="isLoading">
+      <wait-indicator></wait-indicator>
+    </div>
+
+    <div class="constrain" ng-show="!templates.length">
+      <div class="text-lg">
+        Looks like there aren't any templates yet that match your search.
+      </div>
+      <div class="breathe">
+        You can always email us and make a suggestion or become a designer for us!
+        <br>
+        <a href="mailto:support@apertura.design">support@apertura.design</a>
+      </div>
+    </div>
+
+</div>

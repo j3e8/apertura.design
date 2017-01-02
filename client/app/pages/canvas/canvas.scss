@@ -1,0 +1,39 @@
+.canvas-page {
+
+  .floating {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .product {
+    a {
+      text-decoration: none;
+      &:hover > div.row {
+        background-color: #f0f0f0;
+      }
+    }
+
+    padding: 10px;
+    border-bottom: 1px solid #e8e8e8;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .price {
+      color: #595050;
+    }
+  }
+
+
+  @media (max-width: 480px) {
+    .medium {
+      font-size: 12px;
+    }
+    .img-container {
+      img {
+        max-width: 100%;
+      }
+    }
+  }
+}

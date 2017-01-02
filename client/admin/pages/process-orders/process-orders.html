@@ -1,0 +1,20 @@
+<div class="process-orders-page">
+
+  <section ng-show="isLoading || isLoadingTemplate" class="text-center breathe">
+    <wait-indicator></wait-indicator>
+  </section>
+
+  <div class="text-lg" ng-show="!isLoading && !orderItemId">There aren't any orders to process right now.</div>
+
+  <div id="artboard" class="artboard"></div>
+
+  <hr>
+
+  <div class="text-center breathe" ng-show="orderItemId">
+    <button ng-click="processOrder()" ng-hide="isProcessing">Process</button>
+    <div ng-show="isProcessing">
+      {{ processingStatus }}
+    </div>
+  </div>
+
+</div>

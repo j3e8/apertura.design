@@ -1,0 +1,21 @@
+<div class="page-header">
+  <header>
+    <a href="/app/home">
+      <img src="/app/assets/images/apertura.png">
+    </a>
+  </header>
+  <nav>
+    <span class="hamburger icon icon-menu clickable" ng-class="{'inverted': menuIsDisplayed}" ng-click="toggleMenu()"></span>
+
+    <ul ng-show="menuIsDisplayed" ng-class="{'open': menuIsDisplayed, 'closed': menuIsDisplayed === false}">
+      <li><a href="/app/home">Home</a></li>
+      <li><a href="/app/canvas">Canvas prints</a></li>
+      <li><a href="/app/templates">Design templates</a></li>
+      <li><a href="/app/photos">Photo prints</a></li>
+      <li><a href="/app/cart">Shopping cart</a></li>
+      <li ng-show="$site.isSignedIn"><a href="/app/my-account">My account</a></li>
+      <li ng-show="$site.isSignedIn"><span class="a" ng-click="$site.signOut()">Sign out</span></li>
+      <li ng-hide="$site.isSignedIn"><a href="/app/signin">Sign in</a></li>
+    </ul>
+  </nav>
+</div>

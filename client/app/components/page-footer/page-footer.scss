@@ -1,0 +1,19 @@
+page-footer {
+  footer {
+    background-color: #3bb8af;
+    color: #fff;
+
+    .links {
+      text-align: center;
+      font-size: 13px;
+      a {
+        color: #fff;
+      }
+    }
+    .copyright {
+      font-size: 11px;
+      text-align: center;
+      padding: 20px 0;
+    }
+  }
+}

@@ -1,0 +1,65 @@
+<div class="content template-page">
+    <h1>{{ template.name }}</h1>
+    <div class="artist">
+      Design template by: {{ template.artistName }}
+    </div>
+
+    <div class="text-center" ng-show="isLoading">
+      <wait-indicator></wait-indicator>
+    </div>
+
+    <div class="thumbnail">
+      <div class="thumbnail-img">
+        <img ng-src="/app/assets/templates/thumbnail/{{ template.id }}.jpg" data-pin-description="{{ template.name }}">
+        <div class="pinit">
+          <a href="https://www.pinterest.com/pin/create/button/" data-pin-tall="true" data-pin-do="buttonPin" data-pin-media="https://apertura.design/app/assets/templates/thumbnail/{{ template.id }}.jpg" data-pin-description="{{ template.name }}">
+            <img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="breathe">
+      <div class="text-center">
+        <h2 class="light-pink">Use this design</h2>
+        <h1 class="pink">Make a project</h1>
+        <div>
+          <img id="down-arrow" src="/app/assets/images/down-arrow.png">
+        </div>
+      </div>
+
+      <div class="product-list">
+        <div class="product-group" ng-repeat="pg in productGroups">
+          <h2 ng-click="toggleProductGroup(pg)">
+            <div class="row row--spaced row--vertical-center">
+              <div class="row__cell row__cell--fixed">
+                <img class="medium-icon" ng-src="/app/assets/images/{{ pg }}.png">
+              </div>
+              <div class="row__cell">
+                <span>{{ mediumName(pg) }}</span>
+              </div>
+              <div class="row__cell row__cell--fixed">
+                <span class="icon icon-down-caret"></span>
+              </div>
+            </div>
+          </h2>
+          <div class="product-group-list" ng-class="{'open': expandedGroup == pg, 'closed': expandedGroup != pg && previousExpandedGroup == pg}">
+            <div class="product" ng-repeat="p in productsByGroup[pg]">
+              <a ng-href="/app/create/{{ p.templateProductId }}">
+                <div class="row row--spaced">
+                  <div class="row__cell">
+                    {{ p.name }}
+                  </div>
+                  <div class="row__cell row__cell--fixed price">
+                    {{ p.price | currency:'$' }}
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+</div>

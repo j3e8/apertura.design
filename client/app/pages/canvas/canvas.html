@@ -1,0 +1,30 @@
+<div class="content canvas-page">
+
+  <h1>Canvas prints</h1>
+  A beautiful canvas print can add to any room. From large wall-hanging prints to small mantle-top portraits, photos printed on canvas
+  add an element of style to any decor style. Canvas prints from Apertura are stretched
+  around a wood frame with a backboard for strength and easy hanging. Most sizes can be customized with an image-wrapped edge or a solid color.
+
+  <section class="breathe">
+    <div class="text-center" ng-show="isLoading">
+      <wait-indicator></wait-indicator>
+    </div>
+
+    <div ng-show="!isLoading" class="floating">
+      <h2>Choose your canvas size</h2>
+      <div class="product" ng-repeat="t in templates">
+        <a ng-href="/app/create/{{ t.templateProductId }}">
+          <div class="row row--spaced">
+            <div class="row__cell">
+              {{ t.productName }}
+            </div>
+            <div class="row__cell row__cell--fixed price">
+              {{ t.price | currency:'$' }}
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>

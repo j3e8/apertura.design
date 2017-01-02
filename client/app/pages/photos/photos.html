@@ -1,0 +1,79 @@
+<div class="content photos-page">
+  <h1>Photo prints</h1>
+  Let's make this as simple as possible. Choose how you'd like to print your photo and then choose a size from the options that appear.
+
+
+  <div class="mediums">
+    <div class="row row--spaced row--vertical-bottom">
+      <div class="row__cell">
+        <div class="medium" ng-class="{'selected': medium=='photo'}" ng-click="chooseCategory('photo')">
+          <div class="img-container">
+            <img src="assets/images/prints.png">
+          </div>
+          <div>Photo prints</div>
+        </div>
+      </div>
+      <div class="row__cell">
+        <div class="medium" ng-class="{'selected': medium=='canvasposter'}" ng-click="chooseCategory('canvasposter')">
+          <div class="img-container">
+            <img src="assets/images/canvasposters.png">
+          </div>
+          <div>Canvas posters</div>
+        </div>
+      </div>
+      <div class="row__cell">
+        <div class="medium" ng-class="{'selected': medium=='poster'}" ng-click="chooseCategory('poster')">
+          <div class="img-container">
+            <img src="assets/images/posters.png">
+          </div>
+          <div>Posters</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="floating">
+    <div class="breathe" ng-show="medium=='photo'">
+      Classic photo prints from Apertura are printed on high quality photo paper with a lustre finish&mdash;perfect
+      for framing, scrapbooking or adding to any home project.
+    </div>
+
+    <div class="breathe" ng-show="medium=='poster'">
+      Apertura poster prints are unlike anything you've ever seen. With an uber matte finish, these posters have an
+      almost velvet appearance with rich color and quality. Framed or not, a poster from Apertura is sure to add
+      character to any space in your home.
+      <div>
+        <i>Note that posters are shipped from our print partner outside of the US and therefore
+        have slightly longer production times and shipping rates.</i>
+      </div>
+    </div>
+
+    <div class="breathe" ng-show="medium=='canvasposter'">
+      Canvas posters are an inexpensive way to add texture and detail to your prints. We print your images on the
+      same canvas material you're used to seeing, but rather than stretch it and wrap it around a frame, we trim it
+      and ship it rolled like a poster. Frame it for an elegant, textured look, or simply hang it on the wall for
+      a more chic vibe.
+    </div>
+
+    <div class="text-center" ng-show="isLoading">
+      <wait-indicator></wait-indicator>
+    </div>
+
+    <div ng-show="medium && !isLoading">
+      <div class="product" ng-repeat="t in templates">
+        <a ng-href="/app/create/{{ t.templateProductId }}">
+          <div class="row row--spaced">
+            <div class="row__cell">
+              {{ t.productName }}
+            </div>
+            <div class="row__cell row__cell--fixed price">
+              {{ t.price | currency:'$' }}
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </section>
+
+</div>

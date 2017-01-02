@@ -1,0 +1,137 @@
+apertura-photo-picker {
+  .photo-picker {
+    position: fixed;
+    z-index: 11;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.2);
+    -ms-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.2);
+    padding: 30px 15px 10px 15px;
+
+    &.open {
+      animation: slide-up-from-bottom 0.7s ease;
+      animation-fill-mode: forwards;
+      -webkit-animation: slide-up-from-bottom 0.7s ease;
+      -webkit-animation-fill-mode: forwards;
+    }
+
+    &.closed {
+      animation: slide-down-to-bottom 0.7s ease;
+      animation-fill-mode: forwards;
+      -webkit-animation: slide-down-to-bottom 0.7s ease;
+      -webkit-animation-fill-mode: forwards;
+    }
+  }
+
+  .close {
+    position: absolute;
+    z-index: 10;
+    top: 10px;
+    right: 10px;
+    .icon {
+      cursor: pointer;
+      font-size: 15px;
+    }
+  }
+
+  #get-apertura {
+    max-width: 480px;
+    text-align: center;
+    margin: 40px auto;
+  }
+
+  .nav-cell {
+    padding-bottom: 30px;
+  }
+
+  .scroll-y {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-y::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bottom-tabs {
+    padding: 30px 0 0 0;
+    .icon {
+      font-size: 50px;
+      cursor: pointer;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    .bottom-tabs {
+      padding: 20px 0 0 0;
+      font-size: 14px;
+      .icon {
+        font-size: 40px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .bottom-tabs {
+      padding: 10px 0 0 0;
+      .icon {
+        font-size: 30px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  @keyframes slide-up-from-bottom {
+    from { bottom: -100%; },
+    to { bottom: 0; }
+  }
+  @keyframes slide-down-to-bottom {
+    from { bottom: 0 },
+    to { bottom: -100%; }
+  }
+  @-webkit-keyframes slide-up-from-bottom {
+    from { bottom: -100%; },
+    to { bottom: 0; }
+  }
+  @-webkit-keyframes slide-down-to-bottom {
+    from { bottom: 0 },
+    to { bottom: -100%; }
+  }
+
+  .signin-container {
+    max-width: 450px;
+    margin: 30px auto;
+
+    .signin-form {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #3bb8af;
+      color: #fff;
+
+      label {
+        color: #fff;
+      }
+
+      .warning {
+        background-color: #FF3D7F;
+        color: #fff;
+        padding: 5px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .icon-label {
+      display: none;
+    }
+  }
+}

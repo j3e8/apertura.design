@@ -1,0 +1,146 @@
+.create-page {
+  hr {
+    margin: 10px 0 20px 0;
+  }
+
+  .orientation-switch {
+    font-size: 30px;
+  }
+
+  .shadow {
+    background: transparent;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9;
+  }
+
+  .photo-sources {
+    position: fixed;
+    z-index: 10;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.2);
+    -ms-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.2);
+    padding: 60px 30px;
+
+    &.open {
+      animation: slide-up-from-bottom 0.7s ease;
+      animation-fill-mode: forwards;
+      -webkit-animation: slide-up-from-bottom 0.7s ease;
+      -webkit-animation-fill-mode: forwards;
+    }
+
+    &.closed {
+      animation: slide-down-to-bottom 0.7s ease;
+      animation-fill-mode: forwards;
+      -webkit-animation: slide-down-to-bottom 0.7s ease;
+      -webkit-animation-fill-mode: forwards;
+    }
+
+    .icon {
+      font-size: 60px;
+      cursor: pointer;
+    }
+    img {
+      height: 60px;
+      width: auto;
+      cursor: pointer;
+    }
+  }
+
+  @keyframes slide-up-from-bottom {
+    from { bottom: -100%; },
+    to { bottom: 0; }
+  }
+  @keyframes slide-down-to-bottom {
+    from { bottom: 0 },
+    to { bottom: -100%; }
+  }
+  @-webkit-keyframes slide-up-from-bottom {
+    from { bottom: -100%; },
+    to { bottom: 0; }
+  }
+  @-webkit-keyframes slide-down-to-bottom {
+    from { bottom: 0 },
+    to { bottom: -100%; }
+  }
+
+  .image-wait-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    margin-left: -15px;
+    margin-top: -15px;
+    overflow: hidden;
+    z-index: 20;
+  }
+
+  .close {
+    position: absolute;
+    z-index: 10;
+    top: 10px;
+    right: 10px;
+    .icon {
+      cursor: pointer;
+      font-size: 15px;
+    }
+    @media screen and (max-width: 480px) {
+      top: 30px;
+    }
+  }
+
+  @media print {
+    .image-wait-indicator {
+      display: none;
+    }
+    .template-info {
+      display: none;
+    }
+    .artboard {
+      padding: 0;
+      margin: 0;
+      background-color: #eee !important;
+      line-height: 0 !important;
+      max-height: none;
+      svg {
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+      }
+    }
+    .buttons {
+      display: none;
+    }
+    apertura-photo-picker {
+      display: none;
+    }
+    .shadow {
+      display: none;
+    }
+    .photo-sources {
+      display: none;
+    }
+    .color-picker {
+      display: none;
+    }
+    #instructions-top {
+      display: none;
+    }
+    hr {
+      display: none;
+    }
+  }
+}

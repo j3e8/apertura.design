@@ -1,0 +1,96 @@
+<div class="content confirm-order-page">
+
+  <h1>Confirm Your Order</h1>
+
+  <section class="breathe">
+    <div class="headings">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          Product
+        </div>
+        <div class="row__cell qty-cell">
+          Qty
+        </div>
+        <div class="row__cell price-cell">
+          Price ea.
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-item" ng-repeat="item in cart.items">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell img-cell">
+          <svg-thumbnail guid="item.guid"></svg-thumbnail>
+        </div>
+        <div class="row__cell">
+          {{ item.name }}
+          <div class="breathe status" ng-show="item.status">
+            <i>{{ item.status }}</i>
+          </div>
+        </div>
+        <div class="row__cell qty-cell">
+          {{ item.qty }}
+        </div>
+        <div class="row__cell price-cell">
+          {{ item.price | currency:'$' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="shipping">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          Ship to:
+          <div ng-show="shippingAddressIsLoaded">
+            <div>{{ shipAddress.firstName }} {{ shipAddress.lastName }}</div>
+            <div>{{ shipAddress.address }}</div>
+            <div ng-show="shipAddress.address2">{{ shipAddress.address2 }}</div>
+            <div>{{ shipAddress.city }}, {{ shipAddress.state }} {{ shipAddress.postalCode }}</div>
+          </div>
+        </div>
+        <div class="row__cell price-cell">
+          {{ cart.shipping | currency:'$' }}
+          <wait-indicator ng-show="shippingIsLoading"></wait-indicator>
+        </div>
+      </div>
+    </div>
+
+    <div class="discount" ng-show="cart.discountCode">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          <div>
+            <div class="discount-code">{{ cart.discountCode }}</div>
+            <div>{{ cart.discountDescription }}</div>
+          </div>
+        </div>
+        <div class="row__cell price-cell">
+          <span class="discount-amount">
+            {{ -cart.discount | currency:'$' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="total">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          <b>Total</b>
+        </div>
+        <div class="row__cell price-cell">
+          <b>{{ cart.total | currency:'$' }}</b>
+        </div>
+      </div>
+    </div>
+
+    <div ng-show="billingInfoIsLoaded && billingInfo">
+      <div>{{ billingInfo.brand }} ************{{ billingInfo.lastFour }}</div>
+      <div>{{ billingInfo.expMonth }}/{{ billingInfo.expYear }}</div>
+    </div>
+
+  </section>
+
+  <section class="breathe text-right">
+    <button ng-click="checkout()" ng-hide="isPlacingOrder">Place order</button>
+    <wait-indicator ng-show="isPlacingOrder"></wait-indicator>
+  </section>
+</div>

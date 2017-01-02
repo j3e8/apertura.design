@@ -1,0 +1,18 @@
+<div class="content saved-templates-page">
+  <h1>Saved Projects</h1>
+
+  <div ng-repeat="project in projects">
+    <div class="row row--spaced">
+      <div class="row__cell row__cell--fixed">
+        <svg-thumbnail guid="project.guid"></svg-thumbnail>
+      </div>
+      <div class="row__cell">
+        {{ project.productName }}
+      </div>
+      <div class="row__cell">
+        {{ project.width }}in x {{ project.height }}in
+      </div>
+    </div>
+  </div>
+
+</div>

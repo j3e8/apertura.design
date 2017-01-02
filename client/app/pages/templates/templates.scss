@@ -1,0 +1,97 @@
+.templates-page {
+  .instructions {
+  }
+
+  .promotion-banner {
+    margin: 5px 0 40px 0;
+    padding: 20px;
+    background-color: #ff4a88;
+    color: #fff;
+    font-size: 20px;
+
+    .promotion-ends {
+      font-size: 14px;
+    }
+
+    @media (max-width: 640px) {
+      div.row > div.row__cell {
+        flex: 0 0 100% !important;
+        -webkit-flex: 0 0 100% !important;
+        -moz-flex: 0 0 100% !important;
+        -ms-flex: 0 0 100% !important;
+
+        &.promotion-ends {
+          margin-top: 10px;
+          text-align: left;
+        }
+      }
+    }
+  }
+
+  .template-cell {
+    flex: 1 0 280px !important;
+    -webkit-flex: 1 0 280px !important;
+    -moz-flex: 1 0 280px !important;
+    -ms-flex: 1 0 280px !important;
+
+    @media (max-width: 480px) {
+      flex: 0 0 calc(100% - 20px) !important;
+      -webkit-flex: 0 0 calc(100% - 20px) !important;
+      -moz-flex: 0 0 calc(100% - 20px) !important;
+      -ms-flex: 0 0 calc(100% - 20px) !important;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .img-container {
+      height: 280px;
+      margin-bottom: 5px;
+      text-align: center;
+
+      @media (max-width: 480px) {
+        height: auto;
+      }
+
+      img {
+        max-width: 280px;
+        max-height: 280px;
+        @media (max-width: 480px) {
+          max-width: none;
+          max-height: none;
+          width: 100%;
+        }
+      }
+    }
+    .template-name {
+      text-align: center;
+    }
+  }
+
+  #how-it-works {
+    img.step {
+      height: 40px;
+    }
+    h3 {
+      font-size: 18px;
+      font-weight: 300;
+    }
+    img.illustration {
+      max-width: 150px;
+      max-height: 72px;
+    }
+    .illustration-cell {
+      padding: 25px 0;
+    }
+    @media (max-width: 640px) {
+      &.row {
+        margin: 20px 0;
+        & > .row__cell {
+          flex: 0 0 calc(100% - 20px);
+          margin: 5px 10px;
+        }
+      }
+    }
+  }
+}

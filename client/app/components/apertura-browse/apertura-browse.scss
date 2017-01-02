@@ -1,0 +1,130 @@
+apertura-browse {
+  div.row.tiles {
+    & > div.row__cell.tile {
+      flex: 1 0 150px !important;
+      -webkit-flex: 1 0 150px !important;
+      -moz-flex: 1 0 150px !important;
+      -ms-flex: 1 0 150px !important;
+
+      height: 150px;
+
+      background-color: #f0f0f0;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: contain;
+
+      position: relative;
+      cursor: pointer;
+
+      .tile-label {
+        position: absolute;
+
+        text-align: right;
+        top: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        white-space: nowrap;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .date {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        font-size: 30px;
+
+        &.overlay {
+          color: rgba(255, 255, 255, 0.75);
+        }
+      }
+
+      .photo-count {
+        font-size: 15px;
+        position: absolute;
+        left: 1px;
+        bottom: 2px;
+        width: auto;
+        min-width: 20px;
+        text-align: center;
+        overflow: hidden;
+        height: 20px;
+        padding: 0 5px;
+        background-color: #3bb8af;
+        color: #fff;
+        border-radius: 10px;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+      }
+    }
+  }
+
+
+  div.content {
+    padding: 10px;
+    background-color: rgba(255,255,255,0.7);
+  }
+
+  @media screen and (max-width: 640px) {
+    div.content {
+      padding: 5px;
+    }
+  }
+
+  div.row div.row__cell.row__cell--year {
+    flex: 1 1 400px;
+    -webkit-flex: 1 1 400px;
+    -moz-flex: 1 1 400px;
+    -ms-flex: 1 1 400px;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    background-color: rgba(148,217,192,0.3);
+    height: 220px;
+  }
+
+  @media screen and (max-width: 640px) {
+    div.row div.row__cell.row__cell--year {
+      height: 100px;
+      flex: 1 1 calc(50% - 20px);
+      -webkit-flex: 1 1 calc(50% - 20px);
+      -moz-flex: 1 1 calc(50% - 20px);
+      -ms-flex: 1 1 calc(50% - 20px);
+    }
+  }
+
+
+  div.row div.row__cell.row__cell--month {
+    flex: 0 1 25%;
+    -webkit-flex: 0 1 25%;
+    -moz-flex: 0 1 25%;
+    -ms-flex: 0 1 25%;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    background-color: rgba(148,217,192,0.3);
+    height: 250px;
+  }
+  @media screen and (max-width: 640px) {
+    div.row div.row__cell.row__cell--month {
+      height: 100px;
+    }
+  }
+
+  div.calendar {
+  	height: 750px;
+  }
+  @media screen and (max-width: 640px) {
+  	div.calendar {
+  		height: 320px;
+  	}
+  }
+}

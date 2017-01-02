@@ -1,0 +1,214 @@
+app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
+  var SvgToJpg = {};
+
+  var PPI = 300;
+
+  function htmlToElement(html) {
+    var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+  }
+
+  function makeBase64Svg(projectData, svgText, callback) {
+    console.log('loadLinkedImages');
+
+    // convert svgText to DOM and link projectData to the images
+    var svgElement = htmlToElement(svgText);
+    for (var id in projectData.photos) {
+      var images = svgElement.getElementsByTagName('image');
+      for (var i=0; i < images.length; i++) {
+        if (images[i].getAttribute('data-photoid') == id) {
+          projectData.photos[id].image = images[i];
+        }
+      }
+    }
+
+    var photosToConvert = 0;
+    var photosConverted = 0;
+    for (var id in projectData.photos) {
+      var projectPhoto = projectData.photos[id];
+      if (!projectPhoto.base64) {
+        if (projectPhoto.src) {
+          photosToConvert++;
+
+          (function() {
+            var url = projectPhoto.src;
+            var thumbnailSrc = projectPhoto.thumbnailSrc;
+
+            loadHiResPhoto(url, thumbnailSrc, function(base64img) {
+              projectPhoto.image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', base64img);
+
+              var tmpImg = new Image();
+              tmpImg.src = base64img;
+
+              EXIF.getData(tmpImg, function() {
+                var orientation = EXIF.getTag(tmpImg, 'Orientation');
+                console.log("orientation", orientation);
+                switch (orientation) {
+                  case 3:
+                    projectPhoto.rotation = 180;
+                    break;
+                  case 6:
+                    projectPhoto.rotation = 90;
+                    break;
+                  case 8:
+                    projectPhoto.rotation = 270;
+                    break;
+                  case 1:
+                  default:
+                    projectPhoto.rotation = 0;
+                    break;
+                }
+                applyPhotoRotation(projectPhoto);
+
+                photosConverted++;
+                if (photosConverted == photosToConvert) {
+                  if (callback) {
+                    callback(svgElement.outerHTML);
+                  }
+                }
+
+              });
+
+            });
+
+          })();
+
+        }
+      }
+    }
+    if (photosToConvert == 0) {
+      var svgImage = generateBase64OfProject(svgElement);
+      if (callback) {
+        callback(svgImage);
+      }
+    }
+  }
+
+  function applyPhotoRotation(projectPhoto) {
+    if (projectPhoto.rotation == 180) {
+      var cx = Number(projectPhoto.imageBounds.left) + projectPhoto.imageBounds.width / 2;
+      var cy = Number(projectPhoto.imageBounds.top) + projectPhoto.imageBounds.height / 2;
+      var rotate = "rotate(" + projectPhoto.rotation + ", " + cx + ", " + cy + ")";
+      projectPhoto.image.setAttribute('transform', rotate);
+    }
+    else if (projectPhoto.rotation == 90 || projectPhoto.rotation == 270) {
+      projectPhoto.image.setAttribute('x', 0);
+      projectPhoto.image.setAttribute('y', 0);
+      var w = parseFloat(projectPhoto.image.getAttribute('width'));
+      var h = parseFloat(projectPhoto.image.getAttribute('height'));
+      projectPhoto.image.setAttribute('width', h);
+      projectPhoto.image.setAttribute('height', w);
+      var x = Number(w) + (projectPhoto.shapeBounds.width - w) / 2;
+      var y = (projectPhoto.shapeBounds.height - h) / 2;
+      var translate = "translate(" + x + "," + y + ")";
+      var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
+      projectPhoto.image.setAttribute('transform', translate + ' ' + rotate);
+    }
+  }
+
+  function loadHiResPhoto(url, thumbnailSrc, callback) {
+    $http.get(url, {
+      responseType: 'arraybuffer'
+    })
+    .then(function(response) {
+      var b64 = _arrayBufferToBase64(response.data);
+      var base64img = 'data:image/jpg;base64,' + b64;
+
+      if (callback) {
+        callback(base64img);
+      }
+    }, function(error) {
+      console.error(error);
+    });
+  }
+
+  function _arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i=0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  function getCartItemByGuid(guid) {
+    var itemStr = localStorage.getItem('item' + guid);
+    if (!itemStr) {
+      return null;
+    }
+    return JSON.parse(itemStr);
+  }
+
+  function getCart() {
+    var cartStr = localStorage.getItem('cart');
+    if (!cartStr) {
+      return null;
+    }
+    return JSON.parse(cartStr);
+  }
+
+  function processCartItem(guid, projectData, svg, callback) {
+
+    $rootScope.$broadcast("processingImage", {
+      'message': 'downloading',
+      'guid': guid
+    });
+
+    makeBase64Svg(projectData, svg, function(svgText) {
+
+      $rootScope.$broadcast("processingImage", {
+        'message': 'converting',
+        'guid': guid
+      });
+
+      var worker = new Worker("workers/ConvertSvg.js");
+      worker.addEventListener("message", function(e) {
+        var result = JSON.parse(e.data);
+        console.log("worker response received", result);
+        if (result.message == 'finished') {
+          if (callbcak) {
+            callback(guid);
+          }
+        }
+        else if (result.message == 'uploading') {
+          $rootScope.$broadcast("processingImage", {
+            'message': 'uploading',
+            'guid': guid
+          });
+        }
+      }, false);
+      var args = {
+        'message': 'process',
+        'projectData': projectData,
+        'svgText': svgText
+      }
+      worker.postMessage(JSON.stringify(args));
+
+    });
+  }
+
+  $rootScope.$on("addDesignToCart", function(event, guid) {
+    console.log('addDesignToCart');
+
+    var cart = getCart();
+    var item = getCartItemByGuid(guid);
+
+    if (!item) {
+      return;
+    }
+
+    var projectData = item.projectData;
+    var svg = item.svg;
+
+    processCartItem(guid, projectData, svg, function(guid) {
+      $rootScope.$broadcast("processingImage", {
+        'message': 'done',
+        'guid': guid
+      });
+    });
+  });
+
+  return SvgToJpg;
+}]);

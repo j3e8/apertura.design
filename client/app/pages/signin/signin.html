@@ -1,0 +1,73 @@
+<div class="signin-page">
+  <div class="row">
+  	<div class="row__cell"></div>
+
+  	<div class="row__cell signin-form" ng-show="display == 'signin'">
+  		<div class="well">
+  			<h1>Sign in</h1>
+  			<form onsubmit="return false;">
+  				<div class="breathe">
+  					<input type="text" ng-model="username" placeholder="username/email" />
+  				</div>
+  				<div class="breathe">
+  					<input type="password" ng-model="password" placeholder="password" />
+  				</div>
+  				<div class="breathe text-right">
+  					<input type="submit" ng-click="attemptSignin()" value="Sign in"/>
+  				</div>
+  				<div ng-show="errorMessage != ''" class="error">
+  					{{ errorMessage }}
+  				</div>
+  			</form>
+  		</div>
+  		<div class="text-right breathe">
+  			<span class="link" ng-click="toggleSignInSignUp()">Create a free account</span>
+  		</div>
+  	</div>
+
+    <div class="row__cell signin-form" ng-show="display == 'signup'">
+  		<div class="well">
+  			<h1>Create account</h1>
+        <div class="breathe">
+          It's easy and free to create an Apertura.design account to order prints of your
+          unique creations!
+        </div>
+  			<form onsubmit="return false;" autocomplete="off" novalidate>
+  				<div class="breathe">
+  					<input type="text" ng-model="username" placeholder="username/email" ng-pattern="emailPattern" required ng-change="checkEmailAvailability()" ng-class="{'available': usernameIsAvailable, 'unavailable': usernameIsAvailable === false}" />
+  				</div>
+  				<div class="breathe">
+  					<input type="password" ng-model="password" placeholder="password" required />
+  				</div>
+  				<div class="breathe text-right">
+  					<input type="submit" ng-click="attemptSignup()" value="Sign up"/>
+  				</div>
+  				<div ng-show="errorMessage != ''" class="error">
+  					{{ errorMessage }}
+  				</div>
+  			</form>
+  		</div>
+  		<div class="text-right breathe">
+  			<span class="link" ng-click="toggleSignInSignUp()">Already have an account?</span>
+  		</div>
+  	</div>
+
+  	<div class="row__cell"></div>
+  </div>
+
+  <div class="dialog-box-shadow" ng-show="forgotPasswordDialogIsDisplayed"></div>
+  <div class="dialog-box" ng-show="forgotPasswordDialogIsDisplayed">
+  	<h2>Forgot Password</h2>
+  	Provide your email address and we'll send an email to help you reset your password.
+
+  	<div class="breathe">
+  		<input type="text" ng-model="forgotEmail" placeholder="email@example.com" />
+  	</div>
+  	<div class="breathe text-center">
+  		<input type="button" class="cancel" value="Cancel" ng-click="toggleForgotPasswordDialog()" ng-hide="isSending" />
+  		<input type="button" value="Send" ng-click="sendForgotPasswordEmail()" ng-hide="isSending" />
+  		<wait-indicator ng-show="isSending"></wait-indicator>
+  	</div>
+  </div>
+
+</div>

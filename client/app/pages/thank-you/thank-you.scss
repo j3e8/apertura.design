@@ -1,0 +1,83 @@
+.thank-you-page {
+  .order-item {
+    border-top: 1px solid #e6e6e6;
+    padding: 10px 0;
+    position: relative;
+  }
+
+  .img-cell {
+    text-align: center;
+    position: relative;
+    flex: 0 0 130px !important;
+    -webkit-flex: 0 0 130px !important;
+    -moz-flex: 0 0 130px !important;
+    -ms-flex: 0 0 130px !important;
+
+    svg {
+      max-width: 130px;
+      max-height: 100px;
+    }
+  }
+
+  .qty-cell {
+    flex: 0 0 50px !important;
+    -webkit-flex: 0 0 50px !important;
+    -moz-flex: 0 0 50px !important;
+    -ms-flex: 0 0 50px !important;
+    text-align: right;
+  }
+
+  .price-cell {
+    flex: 0 0 70px !important;
+    -webkit-flex: 0 0 70px !important;
+    -moz-flex: 0 0 70px !important;
+    -ms-flex: 0 0 70px !important;
+    text-align: right;
+  }
+
+  .shipping {
+    border-top: 1px solid #94d9c0;
+    padding: 10px 0;
+  }
+
+  .discount {
+    border-top: 1px solid #94d9c0;
+    padding: 20px 0;
+  }
+
+  .discount-label {
+    font-size: 12px;
+  }
+
+  .discount-code {
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: uppercase;
+  }
+
+  .discount-input {
+    width: 150px;
+  }
+
+  .discount-amount {
+    color: #3bb8af;
+  }
+
+  .total {
+    border-top: 1px solid #94d9c0;
+    padding-top: 10px;
+  }
+
+  @media (max-width: 720px) {
+    .img-cell {
+      flex: 0 0 80px !important;
+      -webkit-flex: 0 0 80px !important;
+      -moz-flex: 0 0 80px !important;
+      -ms-flex: 0 0 80px !important;
+      svg {
+        max-width: 80px;
+        max-height: 60px;
+      }
+    }
+  }
+}

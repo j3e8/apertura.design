@@ -1,0 +1,22 @@
+.review-templates-page {
+  img.thumbnail {
+    width: 100%;
+  }
+  
+  .keyword-list {
+    margin: 10px 0;
+    .keyword {
+      display: inline-block;
+      margin: 5px;
+      padding: 5px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 3px;
+      .remove {
+        display: inline-block;
+        margin-left: 5px;
+        cursor: pointer;
+        font-size: 10px;
+      }
+    }
+  }
+}

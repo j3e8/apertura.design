@@ -1,0 +1,46 @@
+<div class="content my-account-page">
+  <h1>My Account</h1>
+
+  <div class="breathe">
+    <div>{{ firstName }} {{ lastName }}</div>
+    <div>{{ email }}</div>
+    <div class="breathe">
+      <span class="link" ng-click="editPassword()" ng-show="!isEditingPassword">Change password</span>
+      <div class="password" ng-show="isEditingPassword">
+        <div class="row row--spaced row--vertical-center">
+          <div class="row__cell">
+            <input type="password" ng-model="newPassword" placeholder="new password">
+          </div>
+          <div class="row__cell row__cell--fixed">
+            <button class="sm" ng-click="savePassword()" ng-hide="isSavingPassword">Save</button>
+            <wait-indicator ng-show="isSavingPassword"></wait-indicator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="breathe">
+    <h2>Order History</h2>
+
+    <table class="orders">
+      <thead>
+        <tr>
+          <th>Order No.</th>
+          <th>Date</th>
+          <th class="text-right">Items</th>
+          <th class="text-right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="order in orders" ng-click="viewOrder(order)">
+          <td>{{ order.id }}</td>
+          <td>{{ order.dateOrderedAsDate | date:'MMMM d, yyyy' }}</td>
+          <td class="text-right">{{ order.numItems }}</td>
+          <td class="text-right">{{ order.total | currency:'$' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+</div>

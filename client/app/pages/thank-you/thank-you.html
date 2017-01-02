@@ -1,0 +1,94 @@
+<div class="content thank-you-page">
+  <h1>Order #{{ orderId }}</h1>
+  <div>{{ order.dateOrderedAsDate | date:'MMM d, yyyy'}}</div>
+
+  <p>
+    Thanks for choosing Apertura. We're confident you'll love your new creation and we hope you'll spread the word
+    among friends and family. And, please, let us know if there's something we can do better at
+    <a href="mailto:support@apertura.design">support@apertura.design</a>.
+  </p>
+
+  <section class="breathe">
+    <div class="headings">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          Product
+        </div>
+        <div class="row__cell qty-cell">
+          Qty
+        </div>
+        <div class="row__cell price-cell">
+          Price ea.
+        </div>
+      </div>
+    </div>
+
+    <div class="order-item" ng-repeat="item in order.items">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell img-cell">
+          <svg-thumbnail guid="item.guid"></svg-thumbnail>
+        </div>
+        <div class="row__cell">
+          {{ item.name }}
+        </div>
+        <div class="row__cell qty-cell">
+          {{ item.qty }}
+        </div>
+        <div class="row__cell price-cell">
+          {{ item.price | currency:'$' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="shipping">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          Ship to:
+          <div>
+            <div>{{ shipAddress.firstName }} {{ shipAddress.lastName }}</div>
+            <div>{{ shipAddress.address }}</div>
+            <div ng-show="shipAddress.address2">{{ shipAddress.address2 }}</div>
+            <div>{{ shipAddress.city }}, {{ shipAddress.state }} {{ shipAddress.postalCode }}</div>
+          </div>
+        </div>
+        <div class="row__cell price-cell">
+          {{ shipping | currency:'$' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="discount" ng-show="order.discountCode">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          <div>
+            <div class="discount-code">{{ order.discountCode }}</div>
+            <div>{{ order.discountDescription }}</div>
+          </div>
+        </div>
+        <div class="row__cell price-cell">
+          <span class="discount-amount">
+            -{{ discount | currency:'$' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="total">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          <b>Total</b>
+        </div>
+        <div class="row__cell price-cell">
+          <b>{{ total | currency:'$' }}</b>
+        </div>
+      </div>
+    </div>
+
+    <div ng-show="billingInfo">
+      <div>{{ billingInfo.brand }} ************{{ billingInfo.lastFour }}</div>
+      <div>{{ billingInfo.expMonth }}/{{ billingInfo.expYear }}</div>
+    </div>
+
+  </section>
+
+</div>

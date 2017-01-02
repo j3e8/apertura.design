@@ -1,0 +1,106 @@
+<div class="content order-page">
+
+  <wait-indicator ng-show="isLoading"></wait-indicator>
+
+  <div ng-show="!isLoading">
+    <h1>Order #{{ orderId }}</h1>
+    {{ order.dateOrderedAsDate | date:'MMMM d, yyyy' }}
+
+    <section class="breathe text-lg">
+      Thank you for choosing Apertura.
+    </section>
+
+    <section class="breathe">
+      <div class="row row--spaced row--wrap">
+        <div class="row__cell">
+          <h2>Ship to</h2>
+          <div>{{ order.shipAddress.firstName }} {{ order.shipAddress.lastName }}</div>
+          <div>{{ order.shipAddress.address }}</div>
+          <div ng-show="order.shipAddress.address2">{{ order.shipAddress.address2 }}</div>
+          <div>{{ order.shipAddress.city }}, {{ order.shipAddress.state }} {{ order.shipAddress.postalCode }}</div>
+        </div>
+        <div class="row__cell">
+          <h2>Billing info</h2>
+          <div>{{ order.billing.brand }} ************{{ order.billing.lastFour }}</div>
+          <div>{{ order.billing.expMonth }}/{{ order.billing.expYear }}</div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="breathe order-items">
+      <div class="headings">
+        <div class="row row--spaced row--vertical-center">
+          <div class="row__cell">
+            Product
+          </div>
+          <div class="row__cell qty-cell">
+            Qty
+          </div>
+          <div class="row__cell price-cell">
+            Price ea.
+          </div>
+        </div>
+      </div>
+      <div class="order-item" ng-repeat="item in order.items">
+        <div class="row row--spaced row--vertical-center">
+          <div class="row__cell img-cell">
+            <div class="img">
+              <img ng-src="{{ getSvgSrc(item) }}">
+            </div>
+          </div>
+          <div class="row__cell">
+            {{ item.name }}
+          </div>
+          <div class="row__cell qty-cell">
+            {{ item.qty }}
+          </div>
+          <div class="row__cell price-cell">
+            {{ item.price | currency:'$' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="shipping">
+        <div class="row row--spaced row--vertical-center">
+          <div class="row__cell">
+            Shipping
+          </div>
+          <div class="row__cell price-cell">
+            {{ order.shippingAmount | currency:'$' }}
+            <wait-indicator ng-show="shippingIsLoading"></wait-indicator>
+          </div>
+        </div>
+      </div>
+
+      <div class="discount" ng-show="order.discountCode">
+        <div class="row row--spaced row--vertical-center">
+          <div class="row__cell">
+            <div>
+              <div class="discount-code">{{ order.discountCode }}</div>
+              <div>{{ order.discountDescription }}</div>
+            </div>
+          </div>
+          <div class="row__cell price-cell">
+            <span class="discount-amount">
+              {{ order.discountAmount | currency:'$' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="total">
+        <div class="row row--spaced row--vertical-center">
+          <div class="row__cell">
+            <b>Total</b>
+          </div>
+          <div class="row__cell price-cell">
+            <b>{{ order.total | currency:'$' }}</b>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</div>

@@ -1,0 +1,43 @@
+RewriteEngine On
+
+#RewriteCond %{SERVER_PORT} 80
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R,L]
+
+# rule for API requests
+RewriteRule ^api/([a-zA-z0-9_]+)/([a-zA-z0-9_]+)(\?(.*))?$ server/server.php?namespace=api&class=$1&method=$2&$4 [QSA]
+
+# rule for photo requests
+RewriteRule ^(app/)?([0-9]+)/([0-9]+)/([0-9]+)\.[a-z0-9]+(/([0-9]+))?$ server/server.php?namespace=api&class=Photo&method=output_photo&userId=$2&randomFolder=$3&photoFileId=$4&size=$6 [QSA,END]
+RewriteRule ^(admin/)?([0-9]+)/([0-9]+)/([0-9]+)\.[a-z0-9]+(/([0-9]+))?$ server/server.php?namespace=api&class=Photo&method=output_photo&userId=$2&randomFolder=$3&photoFileId=$4&size=$6 [QSA,END]
+
+# redirect / to app
+RewriteRule ^$ /app/ [L,R=301]
+
+# rules for app
+RewriteRule ^app/$ client/app/index.html [END]
+RewriteRule ^app/bundle.js$ client/app/bundle.js [END]
+RewriteRule ^app/bundle.css$ client/app/bundle.css [END]
+RewriteRule ^app/pages/(.+)/(.+)\.html$ client/app/pages/$1/$2.html [END]
+RewriteRule ^app/assets/(.+)$ client/app/assets/$1 [END]
+RewriteRule ^app/workers/(.+)$ client/app/workers/$1 [END]
+RewriteRule ^app/components/(.+)$ client/app/components/$1 [END]
+
+# rules for admin
+RewriteRule ^admin/$ client/admin/index.html [END]
+RewriteRule ^admin/bundle.js$ client/admin/bundle.js [END]
+RewriteRule ^admin/bundle.css$ client/admin/bundle.css [END]
+RewriteRule ^admin/pages/(.+)/(.+)\.html$ client/admin/pages/$1/$2.html [END]
+RewriteRule ^admin/assets/(.+)$ client/app/assets/$1 [END]
+RewriteRule ^admin/components/(.+)$ client/admin/components/$1 [END]
+
+# rules for artist
+RewriteRule ^artist/$ client/artist/index.html [END]
+RewriteRule ^artist/bundle.js$ client/artist/bundle.js [END]
+RewriteRule ^artist/bundle.css$ client/artist/bundle.css [END]
+RewriteRule ^artist/pages/(.+)/(.+)\.html$ client/artist/pages/$1/$2.html [END]
+RewriteRule ^artist/assets/(.+)$ client/app/assets/$1 [END]
+RewriteRule ^artist/components/(.+)$ client/artist/components/$1 [END]
+
+
+# html5 rewrite
+RewriteRule ^app/(.*)$ client/app/index.html [END]

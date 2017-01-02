@@ -1,0 +1,143 @@
+.cart-page {
+  .cart-item {
+    border-top: 1px solid #e6e6e6;
+    padding: 10px 0;
+    position: relative;
+  }
+
+  .img-cell {
+    text-align: center;
+    position: relative;
+    flex: 0 0 130px !important;
+    -webkit-flex: 0 0 130px !important;
+    -moz-flex: 0 0 130px !important;
+    -ms-flex: 0 0 130px !important;
+    min-height: 6px;
+
+    svg,
+    object,
+    img,
+    embed,
+    iframe {
+      max-width: 130px;
+      max-height: 100px;
+    }
+    iframe {
+      border: none;
+    }
+  }
+
+  .name-cell {
+  }
+
+  .qty-cell {
+    flex: 0 0 50px !important;
+    -webkit-flex: 0 0 50px !important;
+    -moz-flex: 0 0 50px !important;
+    -ms-flex: 0 0 50px !important;
+    text-align: right;
+  }
+
+  .price-cell {
+    flex: 0 0 70px !important;
+    -webkit-flex: 0 0 70px !important;
+    -moz-flex: 0 0 70px !important;
+    -ms-flex: 0 0 70px !important;
+    text-align: right;
+  }
+
+  .delete-cell {
+    flex: 0 0 20px !important;
+    -webkit-flex: 0 0 20px !important;
+    -moz-flex: 0 0 20px !important;
+    -ms-flex: 0 0 20px !important;
+    text-align: right;
+  }
+
+  .overlay {
+    position: absolute;
+    width: 100%;
+    top: 20px;
+    left: 0;
+    text-align: center;
+  }
+
+  .shipping {
+    border-top: 1px solid #94d9c0;
+    padding: 10px 0;
+  }
+
+  .discount {
+    border-top: 1px solid #94d9c0;
+    padding: 20px 0;
+  }
+
+  .discount-label {
+    font-size: 12px;
+  }
+
+  .discount-code {
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: uppercase;
+  }
+
+  .discount-input {
+    width: 150px;
+  }
+
+  .discount-amount {
+    color: #3bb8af;
+  }
+
+  .total {
+    border-top: 1px solid #94d9c0;
+    padding-top: 10px;
+  }
+
+  .zip {
+    width: 100px;
+  }
+
+  .confirm-delete {
+    position: absolute;
+    background-color: #FF4A88;
+    z-index: 4;
+    right: 0;
+    top: 0;
+    padding: 20px;
+    text-align: right;
+    color: #fff;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 720px) {
+    .img-cell {
+      flex: 0 0 80px !important;
+      -webkit-flex: 0 0 80px !important;
+      -moz-flex: 0 0 80px !important;
+      -ms-flex: 0 0 80px !important;
+      svg,
+      object,
+      img,
+      embed,
+      iframe {
+        max-width: 80px;
+        max-height: 60px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .name {
+      display: none;
+    }
+    .discount-input {
+        width: 125px;
+    }
+    .zip {
+    width: 70px;
+    }
+  }
+}

@@ -1,0 +1,51 @@
+.notification {
+  position: fixed;
+  z-index: 1000;
+  top: 10px;
+  left: 50%;
+  width: 400px;
+  margin-left: -200px;
+
+  padding: 15px;
+  text-align: center;
+  font-size: 15px;
+  background-color: #f2e385;
+  color: #595050;
+
+  cursor: pointer;
+  border-radius: 3px;
+
+  &.open {
+    animation: fade-in 0.5s ease;
+    -webkit-animation: fade-in 0.5s ease;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+  }
+
+  &.closed {
+    animation: fade-out 0.5s ease;
+    -webkit-animation: fade-out 0.5s ease;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@-webkit-keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@-webkit-keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

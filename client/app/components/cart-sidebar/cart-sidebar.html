@@ -1,0 +1,73 @@
+<section class="breathe well">
+  <div class="headings">
+    <div class="row row--spaced row--vertical-center">
+      <div class="row__cell">
+        Product
+      </div>
+      <div class="row__cell qty-cell">
+        Qty
+      </div>
+      <div class="row__cell price-cell">
+        Price
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-item" ng-repeat="item in cart.items">
+    <div class="row row--spaced row--vertical-center">
+      <div class="row__cell">
+        {{ item.name }}
+        <div class="breathe status" ng-show="item.status">
+          <i>{{ item.status }}</i>
+        </div>
+      </div>
+      <div class="row__cell qty-cell">
+        {{ item.qty }}
+      </div>
+      <div class="row__cell price-cell">
+        {{ item.price | currency:'$' }}
+      </div>
+    </div>
+  </div>
+
+  <div class="shipping">
+    <div class="row row--spaced row--vertical-center">
+      <div class="row__cell">
+        Shipping
+      </div>
+      <div class="row__cell price-cell">
+        <span ng-show="cart.shipping">{{ cart.shipping | currency:'$' }}</span>
+        <span ng-show="cart.shipping === 0">FREE</span>
+        <wait-indicator ng-show="shippingIsLoading"></wait-indicator>
+      </div>
+    </div>
+  </div>
+
+  <div class="discount" ng-show="cart.discountCode">
+    <div class="row row--spaced row--vertical-center">
+      <div class="row__cell">
+        <div>
+          <div class="discount-code">{{ cart.discountCode }}</div>
+          <div>{{ cart.discountDescription }}</div>
+        </div>
+      </div>
+      <div class="row__cell price-cell">
+        <span class="discount-amount">
+          -{{ cart.discount | currency:'$' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="total">
+    <div class="row row--spaced row--vertical-center">
+      <div class="row__cell">
+        <b>Total</b>
+      </div>
+      <div class="row__cell price-cell">
+        <b>{{ cart.total | currency:'$' }}</b>
+      </div>
+    </div>
+  </div>
+
+</section>

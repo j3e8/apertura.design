@@ -1,0 +1,99 @@
+<div class="upload-page">
+  <h1>Upload new design template</h1>
+
+  <section class="breathe">
+    <div>
+      <label>Name</label>
+      <input type="text" ng-model="name">
+    </div>
+  </section>
+
+  <section class="breathe">
+    <div>
+      <label>Keywords</label>
+      <div class="keyword-list" ng-show="keywords.length">
+        <div class="keyword" ng-repeat="keyword in keywords">
+          {{ keyword }}
+          <div class="remove" ng-click="removeKeyword(keyword)"><span class="icon icon-close"></span></div>
+        </div>
+      </div>
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell">
+          <input type="text" ng-model="newKeyword" ng-keypress="catchEnter($event)">
+        </div>
+        <div class="row__cell row__cell--fixed">
+          <button ng-click="addKeyword()">Add</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="breathe">
+    <div class="row row--spaced row--vertical-center">
+      <div class="row__cell row__cell--fixed">
+        Choose a thumbnail (.jpg)
+      </div>
+      <div class="row__cell row__cell--fixed">
+        <button ng-click="openThumbnailBrowser()">Browse...</button>
+      </div>
+      <div class="row__cell">
+        <img class="thumbnail" ng-src="{{ thumbnail }}" ng-hide="!thumbnail">
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <section class="breathe" ng-hide="templates.length == 0">
+    <div class="row row--spaced">
+      <div class="row__cell">
+        <h2>Design preview</h2>
+      </div>
+      <div class="row__cell">
+        <h2>Compatible products</h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="breathe" ng-repeat="template in templates">
+    <div class="row row--spaced">
+      <div class="row__cell">
+        <div class="artboard" ng-attr-id="{{ template.artboardId }}"></div>
+      </div>
+      <div class="row__cell">
+        <div class="product-list">
+          <div ng-repeat="productGroup in template.productGroups">
+            <h3>{{ getMediumDisplayName(productGroup.medium) }}</h3>
+            <div class="compatible-product" ng-repeat="product in productGroup.products">
+              <input type="checkbox" ng-model="product.isSelected" ng-attr-id="{{ template.artboardId + product.sku }}"> <label for="{{ template.artboardId + product.sku }}">{{ product.name }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="breathe">
+    <div class="breathe">
+      <div class="row row--spaced row--vertical-center">
+        <div class="row__cell row__cell--fixed">
+          <span ng-show="templates.length == 0">
+            Add an .svg file
+          </span>
+          <span ng-show="templates.length > 0">
+            Add another .svg file with<br>
+            a different aspect ratio
+          </span>
+        </div>
+        <div class="row__cell">
+          <button ng-click="openFileBrowser()">Browse...</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="breathe save-buttons text-center">
+    <button ng-click="submitTemplate()" ng-hide="isSaving">Submit</button>
+    <wait-indicator ng-show="isSaving"></wait-indicator>
+  </section>
+</div>

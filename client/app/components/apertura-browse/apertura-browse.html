@@ -1,0 +1,57 @@
+<div>
+  <div ng-show="specificity == 'all'">
+    <h2>All photos</h2>
+    <div class="row row--spaced row--wrap tiles">
+      <div class="row__cell tile row__cell--year" ng-repeat="t in tiles" ng-style="{'background-image': 'url(/{{ t.filename }}/600?{{ t.lastModified }})'}" ng-click="navigate(t.yearTaken)">
+        <div class="content">
+          <div class="tile-label">{{ t.yearTaken }}</div>
+        </div>
+        <div class="photo-count" ng-show="t.numPhotos">{{ t.numPhotos }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-show="specificity == 'year'">
+    <h2>{{ year }}</h2>
+    <div class="row">
+      <div class="row__cell text-left prev-next"><span class="clickable" ng-click="getPrevYear()"><span class="icon-chevron-left clickable"></span>{{ prevYear }}</span></div>
+      <div class="row__cell text-right prev-next"><span class="clickable" ng-click="getNextYear()">{{ nextYear }}<span class="icon-chevron-right clickable"></span></span></div>
+    </div>
+    <div>
+      <div class="row row--spaced clickable" ng-repeat="i in [0,1,2]">
+        <div class="row__cell row__cell--month clickable" ng-class="{'photo-cell': t.filename}" ng-repeat="t in tiles.slice(i*4, (i+1)*4)" ng-style="{'background-image': 'url(/{{ t.filename }}/600?{{ t.lastModified }})'}" ng-click="navigate(t.dateTaken)">
+          <div class="content">
+            <div class="tile-label">{{ t.month }}</div>
+          </div>
+          <div class="photo-count" ng-show="t.numPhotos">{{ t.numPhotos }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-show="specificity == 'month'">
+    <h2>{{ getMonthName() }}, <span ng-click="navigate(year, true)" class="link">{{ year }}</span></h2>
+    <div class="row">
+      <div class="row__cell text-left prev-next"><span class="clickable" ng-click="getPrevMonth()"><span class="icon-chevron-left clickable"></span>{{ getMonthName(-1) }}</span></div>
+      <div class="row__cell text-right prev-next"><span class="clickable" ng-click="getNextMonth()">{{ getMonthName(1) }}<span class="icon-chevron-right clickable"></span></span></div>
+    </div>
+    <div class="calendar">
+      <div class="column">
+        <div class="column__cell row row--calendar" ng-repeat="week in weeks">
+          <div class="row__cell clickable" ng-repeat="day in week.days" ng-style="{'background-image': day.backgroundImage}" ng-click="navigate(day.dayOfMonth)">
+            <div class="date" ng-class="{'overlay': day.backgroundImage != 'none'}">{{ day.dayOfMonth }}</div>
+            <div class="photo-count" ng-show="day.photoCount">{{ day.photoCount }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-show="specificity == 'day'">
+    <h2><span ng-click="navigate(year + '/' + month, true)" class="link">{{ getMonthName() }}</span> {{ day }}, <span ng-click="navigate(year, true)" class="link">{{ year }}</span></h2>
+    <div class="row row--spaced row--wrap tiles">
+      <div class="row__cell tile" ng-repeat="t in tiles" ng-style="{'background-image': 'url(/{{ t.filename }}/600?{{ t.lastModified }})'}" ng-click="choosePhoto(t)"></div>
+    </div>
+  </div>
+
+</div>

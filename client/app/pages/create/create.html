@@ -1,0 +1,64 @@
+<div class="content create-page">
+  <div class="template-info" ng-hide="isLoadingTemplate">
+    <h1>{{ templateProduct.productName }}</h1>
+    <div class="template-name" ng-show="templateProduct.templateType=='design'">Template: {{ templateProduct.templateName }}</div>
+  </div>
+
+  <section ng-show="isLoadingTemplate" class="text-center breathe">
+    <wait-indicator></wait-indicator>
+  </section>
+
+  <section class="breathe" ng-hide="isLoadingTemplate">
+    <div class="row row--spaced row--vertical-bottom" id="instructions-top">
+      <div class="row__cell">
+      </div>
+      <div class="row__cell row__cell--fixed text-right">
+        <div class="row row--spaced" ng-show="otherOrientation">
+          <div class="row__cell">
+            <span ng-click="switchToOtherOrientation()" class="icon icon-arrow-180 clickable orientation-switch" ng-attr-title="Switch to {{ otherOrientation }}"></span>
+          </div>
+          <div class="row__cell row__cell--fixed text-left">
+            <div class="text-sm clickable" ng-click="switchToOtherOrientation()">Switch to<br>{{ otherOrientation }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <canvas-designer project-data="projectData" template-product="templateProduct"></canvas-designer>
+  </section>
+
+  <design-tips></design-tips>
+
+  <div class="buttons text-center" ng-hide="isLoadingTemplate">
+    <button ng-click="saveProject()" ng-class="{'disabled': !canSave}" style="display: none;">Save</button>
+    <!--<button ng-click="printProject()">Print</button>-->
+    <button ng-click="addToCart()" ng-class="{'disabled': !canSave}">Add to cart</button>
+    <div class="breathe warning" ng-show="projectStatus">
+      {{ projectStatus }}
+      <wait-indicator></wait-indicator>
+    </div>
+  </div>
+
+  <color-picker is-displayed="colorizerIsDisplayed" handle-swatch-click="colorize" on-cancel="toggleColorizer"></color-picker>
+
+  <div class="shadow" ng-click="togglePhotoSources()" ng-show="photoSourcesIsDisplayed"></div>
+  <div class="photo-sources" ng-show="photoSourcesIsDisplayed" ng-class="{'open': photoSourcesIsDisplayed, 'closed' : photoSourcesIsDisplayed === false}">
+    <h2>Choose a photo...</h2>
+    <div class="breathe">
+      <div class="row row--spaced row--wrap row--vertical-center">
+        <div class="row__cell text-center">
+          <span class="icon icon-camera" ng-click="browseForPhoto()"></span>
+          <div>Browse my device</div>
+        </div>
+        <div class="row__cell text-center">
+          <img src="/app/assets/images/apertura-mark.png" ng-click="toggleAperturaPhotoPicker()">
+          <div>Apertura Cloud</div>
+        </div>
+      </div>
+    </div>
+    <div class="close"><span class="icon icon-close" ng-click="togglePhotoSources()"></span></div>
+  </div>
+
+  <apertura-photo-picker is-displayed="aperturaPhotoPickerIsDisplayed" handle-photo-click="choosePhoto" on-cancel="toggleAperturaPhotoPicker" on-change-photo-source="switchPhotoSource"></apertura-photo-picker>
+
+</div>

@@ -1,0 +1,9 @@
+<div class="design-tip" ng-show="tipIsDisplayed" ng-class="{'open': tipIsDisplayed, 'closed': tipIsDisplayed === false}">
+  <h2>{{ currentTip.heading }}</h2>
+  <div>
+    {{ currentTip.message }}
+  </div>
+  <div class="text-right">
+    <button ng-click="hideTip()">Okay</button>
+  </div>
+</div>

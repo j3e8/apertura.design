@@ -1,0 +1,11 @@
+<div class="color-picker" ng-show="isDisplayed" ng-class="{'open': isDisplayed, 'closed' : isDisplayed === false}">
+  <div class="color-carousel">
+    <div class="color-palette" ng-repeat="p in palettes">
+      <div class="color-palette-name">{{ p.name }}</div>
+      <div class="color-swatch-group">
+        <div class="color-swatch" ng-click="handleSwatchClick(s.color)" ng-style="{'background-color': s.color}" ng-repeat="s in p.swatches"></div>
+      </div>
+    </div>
+  </div>
+  <div class="close"><span class="icon icon-close" ng-click="onCancel()"></span></div>
+</div>

@@ -1,0 +1,110 @@
+page-header {
+  height: 50px;
+  header {
+    height: 50px;
+    background-color: #fff;
+    border-bottom: 8px solid #3bb8af;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+
+    @media screen and (max-width: 480px) {
+      padding-top: 20px;
+    }
+
+    img {
+      height: 40px;
+      padding: 5px 20px;
+    }
+  }
+
+  nav {
+    position: fixed;
+    top: 5px;
+    right: 10px;
+    z-index: 6;
+    background-color: transparent;
+    font-size: 36px;
+
+    @media screen and (max-width: 480px) {
+      top: 25px;
+    }
+
+    .hamburger {
+      position: relative;
+      z-index: 7;
+
+      &:before {
+        transition: 0.3s;
+      }
+
+      &.inverted:before {
+        color: #fff !important;
+      }
+    }
+
+    ul {
+      position: absolute;
+      z-index: 5;
+      top: -5px;
+      right: -5px;
+      margin: 0;
+      padding: 30px 10px;
+      list-style: none;
+      background-color: #3bb8af;
+      line-height: 1.5;
+      li {
+        display: block;
+
+        a {
+          padding: 15px 20px;
+          color: #fff;
+          font-size: 16px;
+          white-space: nowrap;
+        }
+
+        span.a {
+          color: #fff;
+          text-decoration: underline;
+          white-space: nowrap;
+          font-size: 16px;
+          padding: 15px 20px;
+          cursor: pointer;
+        }
+      }
+
+      &.open {
+        animation: slide-down 0.3s ease;
+        animation-fill-mode: forwards;
+        -webkit-animation: slide-down 0.3s ease;
+        -webkit-animation-fill-mode: forwards;
+      }
+
+      &.closed {
+        animation: slide-up 0.3s ease;
+        animation-fill-mode: forwards;
+        -webkit-animation: slide-up 0.3s ease;
+        -webkit-animation-fill-mode: forwards;
+      }
+    }
+
+    @keyframes slide-down {
+      from { top: -500px }
+      to { top: -5px }
+    }
+    @keyframes slide-up {
+      from { top: -5px }
+      to { top: -500px }
+    }
+    @-webkit-keyframes slide-down {
+      from { top: -500px }
+      to { top: -5px }
+    }
+    @-webkit-keyframes slide-up {
+      from { top: -5px }
+      to { top: -500px }
+    }
+  }
+}

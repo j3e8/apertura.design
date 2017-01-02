@@ -1,0 +1,26 @@
+.shipping-page {
+  .address {
+    margin: 20px 0;
+    padding: 20px 0;
+    border-bottom: 1px solid #e6e6e6;
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .field {
+    margin: 10px 0;
+  }
+
+  .cart-sidebar-cell {
+    margin-left: 50px !important;
+
+    @media (max-width: 720px) {
+      flex: 0 0 100% !important;
+      -webkit-flex: 0 0 100% !important;
+      -moz-flex: 0 0 100% !important;
+      -ms-flex: 0 0 100% !important;
+      margin-left: 0 !important;
+    }
+  }
+}

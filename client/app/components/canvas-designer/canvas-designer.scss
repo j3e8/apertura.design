@@ -1,0 +1,34 @@
+canvas-designer {
+  .artboard {
+    text-align: center;
+    padding: 4px 0 30px 0;
+    margin: 0 auto 20px auto;
+    max-height: 600px;
+
+    svg {
+      background-color: #fff;
+      box-shadow: 0 0 11px 1px rgba(0, 0, 0, 0.25);
+      -webkit-box-shadow: 0 0 11px 1px rgba(0, 0, 0, 0.25);
+      -moz-box-shadow: 0 0 11px 1px rgba(0, 0, 0, 0.25);
+
+      .selected {
+        stroke: #000;
+        stroke-dasharray: 6;
+        animation: svg-selected-dash 0.5s linear;
+        animation-iteration-count: infinite;
+        -webkit-animation: svg-selected-dash 0.5s linear;
+        -webkit-animation-iteration-count: infinite;
+      }
+      @keyframes svg-selected-dash {
+        to {
+          stroke-dashoffset: -12;
+        }
+      }
+      @-webkit-keyframes svg-selected-dash {
+        to {
+          stroke-dashoffset: -12;
+        }
+      }
+    }
+  }
+}

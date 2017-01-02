@@ -1,0 +1,37 @@
+.my-account-page {
+  table.orders {
+    border-collapse: collapse;
+
+    th {
+      padding: 10px 20px;
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    tr {
+      cursor: pointer;
+
+      &:nth-child(even) {
+        background-color: #f6f6f6;
+      }
+
+      &:hover {
+        td {
+          background-color: #94d9c0;
+        }
+      }
+
+      td {
+        padding: 10px 20px;
+        border-bottom: 1px solid #e6e6e6;
+      }
+
+    }
+  }
+
+  .password {
+    max-width: 300px;
+    @media (max-width: 480px) {
+      max-width: none;
+    }
+  }
+}

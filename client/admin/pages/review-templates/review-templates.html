@@ -1,0 +1,44 @@
+<div class="review-templates-page">
+
+  <h1>Review Design Template</h1>
+  <hr>
+
+  <div class="text-center" ng-show="isLoading">
+    <wait-indicator></wait-indicator>
+  </div>
+
+  <section class="breathe" ng-hide="isLoading || !template">
+    <div class="row row--spaced">
+      <div class="row__cell">
+        <img class="thumbnail" ng-src="assets/templates/thumbnail/{{ template.id }}.jpg">
+      </div>
+      <div class="row__cell">
+        <label>Keywords</label>
+        <div class="keyword-list" ng-show="keywords.length">
+          <div class="keyword" ng-repeat="keyword in keywords">
+            {{ keyword }}
+            <div class="remove" ng-click="removeKeyword(keyword)"><span class="icon icon-close"></span></div>
+          </div>
+        </div>
+
+        <div class="breathe">
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="breathe" ng-hide="isLoading || !template">
+    <div ng-repeat="svg in template.svgFiles">
+      <div class="row">
+        <div class="row__cell">
+          svg
+        </div>
+        <div class="row__cell">
+          products
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

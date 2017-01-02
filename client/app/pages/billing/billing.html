@@ -1,0 +1,93 @@
+<div class="content billing-page">
+
+  <div class="row row--spaced row--wrap">
+    <div class="row__cell">
+      <h1>Payment method</h1>
+
+      <div class="text-lg" ng-show="!isLoading && !cards.length">
+        <i>You don't have any saved payment information yet.</i>
+      </div>
+
+      <wait-indicator ng-show="isLoading"></wait-indicator>
+
+      <div class="cards">
+        <form name="billingForm" novalidate>
+          <div class="card" ng-show="!isLoading && cards.length" ng-repeat="card in cards">
+            <div class="row row--spaced row--vertical-center">
+              <div class="row__cell row__cell--fixed">
+                <input type="radio" ng-model="$parent.billingId" name="billingId" ng-value="card.id" ng-change="updateBillingInfo()">
+              </div>
+              <div class="row__cell">
+                <div>{{ card.brand }} ************{{ card.lastFour }}</div>
+                <div>{{ card.expMonth }}/{{ card.expYear }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="card new-card">
+            <div class="row row--spaced">
+              <div class="row__cell row__cell--fixed">
+                <input type="radio" ng-model="billingId" name="billingId" ng-value="0" ng-change="updateBillingInfo()">
+              </div>
+              <div class="row__cell">
+                <div>New payment method</div>
+
+                <div ng-show="billingId === 0">
+                  <div class="field">
+                    <label>Card number</label>
+                    <input type="text" data-stripe="number" maxlength="16" ng-model="newCard.cardNumber" ng-class="{'invalid':!cardIsValid}" required />
+                  </div>
+
+                  <div class="field">
+                    <div class="row row--spaced">
+                      <div class="row__cell">
+                        <label>Sec. code</label>
+                        <input type="text" data-stripe="cvc" maxlength="4" ng-model="newCard.securityCode" ng-class="{'invalid':!securityCodeIsValid}" placeholder="123" required />
+                      </div>
+                      <div class="row__cell row__cell--fixed">
+                        <label>Exp.</label>
+                        <select data-stripe="exp_month" ng-model="newCard.expMonth">
+                          <option value="1">Jan</option>
+                          <option value="2">Feb</option>
+                          <option value="3">Mar</option>
+                          <option value="4">Apr</option>
+                          <option value="5">May</option>
+                          <option value="6">Jun</option>
+                          <option value="7">Jul</option>
+                          <option value="8">Aug</option>
+                          <option value="9">Sep</option>
+                          <option value="10">Oct</option>
+                          <option value="11">Nov</option>
+                          <option value="12">Dec</option>
+                        </select>
+                      </div>
+                      <div class="row__cell row__cell--fixed">
+                        <label>&nbsp;</label>
+                        <select data-stripe="exp_year" ng-model="newCard.expYear" ng-options="year for year in expirationYears"></select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="breathe text-right">
+                    <button class="sm" ng-click="validatePaymentInfo()" ng-hide="isSavingBillingInfo">Save</button>
+                    <wait-indicator ng-show="isSavingBillingInfo"></wait-indicator>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field text-center" ng-hide="!billingId || billingId == '0'">
+            <button ng-click="continueToReview()">Continue</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+    <div class="row__cell row__cell--fixed40 cart-sidebar-cell">
+      <h2>Cart</h2>
+      <cart-sidebar></cart-sidebar>
+    </div>
+  </div>
+
+
+</div>

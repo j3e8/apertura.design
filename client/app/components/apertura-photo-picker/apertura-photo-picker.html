@@ -1,0 +1,70 @@
+<div class="shadow" ng-click="handlePhotoClick()" ng-show="isDisplayed"></div>
+<div class="photo-picker" ng-show="isDisplayed" ng-class="{'open': isDisplayed, 'closed' : isDisplayed === false}">
+  <div class="column">
+    <div class="column__cell column__cell--fixed nav-cell">
+      <span class="clickable" ng-click="onChangePhotoSource()">
+        <span class="icon icon-photos"></span>
+        Choose a different photo source
+      </span>
+    </div>
+    <div class="column__cell" ng-hide="$site.isSignedIn">
+      <div class="signin-container">
+        <h1>Sign in</h1>
+        Use your Apertura.photo email and password to access your photos in the Apertura cloud.
+        <div class="signin-form">
+          <div class="breathe">
+            <label>Email/username</label>
+            <input type="text" ng-model="username">
+          </div>
+          <div class="breathe">
+            <label>Password</label>
+            <input type="password" ng-model="password">
+          </div>
+          <div class="warning" ng-show="loginErrorMessage">
+            {{ loginErrorMessage }}
+          </div>
+          <div class="breathe text-center">
+            <button ng-click="signin()" ng-hide="isSigningIn">Sign in</button>
+            <wait-indicator ng-show="isSigningIn"></wait-indicator>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="column__cell scroll-y" ng-show="$site.isSignedIn && $site.isAperturaPhotoSubscriber">
+      <apertura-browse ng-show="subview == 'browse'" handle-photo-click="choosePhoto"></apertura-browse>
+      <apertura-collections ng-show="subview == 'collections'"></apertura-collections>
+      <apertura-search ng-show="subview == 'search'"></apertura-search>
+    </div>
+    <div class="column__cell column__cell--fixed" ng-show="$site.isSignedIn && $site.isAperturaPhotoSubscriber">
+      <div class="bottom-tabs">
+        <div class="row row--spaced row--wrap row--vertical-center">
+          <div class="row__cell text-center">
+            <span class="icon icon-photo" ng-click="showBrowseView()"></span>
+            <div class="icon-label">Browse photos</div>
+          </div>
+          <div class="row__cell text-center">
+            <span class="icon icon-collection" ng-click="showCollectionsView()"></span>
+            <div class="icon-label">Browse collections</div>
+          </div>
+          <div class="row__cell text-center">
+            <span class="icon icon-search" ng-click="showSearchView()"></span>
+            <div class="icon-label">Search photos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="column__cell" ng-show="$site.isSignedIn && !$site.isAperturaPhotoSubscriber">
+      <div class="text-center" id="get-apertura">
+        <h1>Hey, you should sign up for an Apertura.photo cloud account</h1>
+        Starting at just 99&cent; per month, you can have all your photos from all your devices stored and organized right here
+        waiting to be added into your next photo project.
+        <div class="breathe">
+          <a href="https://apertura.photo" class="text-lg" target="_blank">Learn more about Apertura.photo</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="close"><span class="icon icon-close" ng-click="onCancel()"></span></div>
+</div>

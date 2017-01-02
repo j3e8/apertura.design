@@ -1,0 +1,90 @@
+<div class="content shipping-page">
+
+  <div class="row row--spaced row--wrap">
+    <div class="row__cell">
+      <h1>Ship to</h1>
+
+      <wait-indicator ng-show="isLoading"></wait-indicator>
+
+      <div class="addresses">
+        <form name="shipToForm" novalidate>
+          <div class="address" ng-show="!isLoading && addresses.length" ng-repeat="address in addresses">
+            <div class="row row--spaced row--vertical-center">
+              <div class="row__cell row__cell--fixed">
+                <input type="radio" ng-model="$parent.shipAddressId" name="shipAddressId" ng-value="address.id" ng-change="updateShippingAddress()">
+              </div>
+              <div class="row__cell">
+                <div>{{ address.firstName }} {{ address.lastName }}</div>
+                <div>{{ address.address }}</div>
+                <div ng-show="address.address2">{{ address.address2 }}</div>
+                <div>{{ address.city }}, {{ address.state }} {{ address.postalCode }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="address new-address">
+            <div class="row row--spaced">
+              <div class="row__cell row__cell--fixed">
+                <input type="radio" ng-model="shipAddressId" name="shipAddressId" value="0" ng-change="updateShippingAddress()">
+              </div>
+              <div class="row__cell">
+                <div>New address</div>
+
+                <div ng-show="shipAddressId === '0'">
+                  <div class="field">
+                    <div class="row row--spaced">
+                      <div class="row__cell">
+                        <label>First name</label>
+                        <input type="text" ng-model="newAddress.firstName" required>
+                      </div>
+                      <div class="row__cell">
+                        <label>Last name</label>
+                        <input type="text" ng-model="newAddress.lastName">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="row row--spaced">
+                      <div class="row__cell">
+                        <label>Street</label>
+                        <input type="text" ng-model="newAddress.address" required>
+                      </div>
+                      <div class="row__cell row__cell--fixed40">
+                        <label>Apt/Suite</label>
+                        <input type="text" ng-model="newAddress.address2">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label>City</label>
+                    <input type="text" ng-model="newAddress.city" required>
+                  </div>
+                  <div class="field">
+                    <label>State/Province</label>
+                    <select ng-model="newAddress.state" ng-options="s.code as s.name for s in shipping.SHIP_STATES[newAddress.country]" required></select>
+                  </div>
+                  <div class="field">
+                    <label>Postal code</label>
+                    <input type="text" class="zip" ng-model="newAddress.postalCode" required>
+                  </div>
+                  <div class="field text-right">
+                    <button class="sm" ng-click="saveNewAddress()">Save</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="field text-center" ng-hide="!shipAddressId || shipAddressId == '0'">
+            <button ng-click="continueToBilling()">Continue</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+    <div class="row__cell row__cell--fixed40 cart-sidebar-cell">
+      <h2>Cart</h2>
+      <cart-sidebar></cart-sidebar>
+    </div>
+  </div>
+
+</div>
