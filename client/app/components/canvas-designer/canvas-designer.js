@@ -552,13 +552,13 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           }
           if ($scope.templateProduct.edge == 'wrap') {
             element.style.cursor = "default";
-            element.removeEventListener("click", handleFillClick);
+            element.removeEventListener("click", handleEdgeClick);
             element.style.backgroundColor = IMAGE_WRAP_EDGE_COLOR;
             element.style.opacity = IMAGE_WRAP_EDGE_OPACITY;
           }
           else {
             element.style.cursor = "pointer";
-            element.addEventListener("click", handleFillClick);
+            element.addEventListener("click", handleEdgeClick);
             element.style.backgroundColor = null;
             element.style.opacity = null;
             applyColoredEdges(element, project.data.edgeColor);
