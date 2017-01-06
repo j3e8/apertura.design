@@ -1,14 +1,12 @@
-app.controller("createController", ["$scope", "$http", "$routeParams", "$location", "Site", "Util", "$rootScope", "uploadDesign",
-function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploadDesign) {
+app.controller("createController", ["$scope", "$http", "$routeParams", "$location", "Site", "Util", "$rootScope", "uploadDesign", "project",
+function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploadDesign, project) {
+  $scope.project = project;
+
   $scope.templateProductId = $routeParams.templateProductId;
   $scope.savedTemplateId = $routeParams.savedTemplateId;
   $scope.templateProduct = {};
-  $scope.canSave = false;
-
-  $scope.projectStatus = null;
   $scope.isLoadingTemplate = false;
 
-  $scope.projectData = {};
   $scope.colorizerIsDisplayed = undefined;
   $scope.photoSourcesIsDisplayed = undefined;
   $scope.aperturaPhotoPickerIsDisplayed = undefined;
@@ -26,18 +24,16 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
   }
 
   $scope.loadTemplateProduct = function() {
-    console.log("create.js", "loadTemplateProduct()");
     $scope.isLoadingTemplate = true;
     $http.post(API_URL + "/Template/get_template_product", {
       templateProductId: $scope.templateProductId
     }).then(function(response) {
       $scope.templateId = response.data.results.id;
-      console.log("create.js", "templateId", $scope.templateId);
       ga('send', 'event', 'create', $scope.templateId);
       $scope.isLoadingTemplate = false;
       $scope.templateProduct = response.data.results;
-      console.log("create.js", "templateProduct", $scope.templateProduct);
       $scope.lookupOtherOrientation();
+      $scope.lookupEdgeOptions();
       updateCssPageSize();
     }, function(error) {
       $scope.isLoadingTemplate = false;
@@ -55,7 +51,6 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
   });
 
   $scope.lookupOtherOrientation = function() {
-    console.log("create.js", "lookupOtherOrientation()");
     $http.post(API_URL + "/Template/get_rotated_template_product", {
       templateProductId: $scope.templateProductId
     }).then(function(response) {
@@ -68,11 +63,68 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     });
   }
 
-  $scope.switchToOtherOrientation = function() {
+  $scope.lookupEdgeOptions = function() {
+    $http.post(API_URL + "/Template/get_template_product_edge_options", {
+      templateProductId: $scope.templateProductId
+    }).then(function(response) {
+      if (response.data.results) {
+        $scope.otherEdgeTemplateProductId = response.data.results.id;
+      }
+    }, function(error) {
+      console.error(error);
+    });
+  }
+
+  $scope.switchToImageWrap = function() {
+    if ($scope.templateProduct.edge != 'wrap') {
+      var tmp = $scope.templateProductId;
+      $scope.templateProductId = $scope.otherEdgeTemplateProductId;
+      $scope.otherEdgeTemplateProductId = tmp;
+      project.svg = null;
+      $scope.loadTemplateProduct();
+    }
+    project.data.edgeColor = undefined;
+  }
+
+  $scope.switchToBlackEdge = function() {
+    if ($scope.templateProduct.edge != 'none') {
+      switchToColoredEdge();
+    }
+    project.data.edgeColor = '#000000';
+  }
+
+  $scope.switchToWhiteEdge = function() {
+    if ($scope.templateProduct.edge != 'none') {
+      switchToColoredEdge();
+    }
+    project.data.edgeColor = '#ffffff';
+  }
+
+  function switchToColoredEdge() {
+    var tmp = $scope.templateProductId;
+    $scope.templateProductId = $scope.otherEdgeTemplateProductId;
+    $scope.otherEdgeTemplateProductId = tmp;
+    project.svg = null;
+    $scope.loadTemplateProduct();
+  }
+
+  $scope.switchToPortrait = function() {
+    if ($scope.templateProduct.orientation != 'portrait') {
+      switchToOtherOrientation();
+    }
+  }
+
+  $scope.switchToLandscape = function() {
+    if ($scope.templateProduct.orientation != 'landscape') {
+      switchToOtherOrientation();
+    }
+  }
+
+  function switchToOtherOrientation() {
     var tmp = $scope.templateProductId;
     $scope.templateProductId = $scope.otherOrientationId;
     $scope.otherOrientationId = tmp;
-    $scope.svg = null;
+    project.svg = null;
     $scope.loadTemplateProduct();
   }
 
@@ -85,7 +137,7 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
       width: $scope.templateProduct.orientation == 'landscape' ? longestSide : shortestSide,
       height: $scope.templateProduct.orientation == 'portrait' ? longestSide : shortestSide
     };
-    $scope.projectData.printSize = newPrintSize;
+    project.data.printSize = newPrintSize;
     if (!printStyleElement) {
       printStyleElement = document.createElement("style");
       printStyleElement.type = "text/css";
@@ -99,50 +151,11 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     if (!$scope.savedTemplateId) {
       return;
     }
-    $scope.projectData = JSON.parse(localStorage.getItem('template_' + $scope.savedTemplateId));
-  }
-
-  function determineSavability() {
-    var canSave = true;
-    if (isSomethingUploading()) {
-      canSave = false;
-    }
-    if (!allPhotosAreFilled()) {
-      canSave = false;
-    }
-    $scope.canSave = canSave;
-    if ($scope.canSave) {
-      $scope.projectStatus = null;
-    }
-  }
-
-  function isSomethingUploading() {
-    if (!$scope.projectData.photos) {
-      return false;
-    }
-    for (var id in $scope.projectData.photos) {
-      if ($scope.projectData.photos[id].isUploading) {
-        $scope.projectStatus = "Uploading photo...";
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function allPhotosAreFilled() {
-    if (!$scope.projectData.photos) {
-      return false;
-    }
-    for (var id in $scope.projectData.photos) {
-      if (!$scope.projectData.photos[id].src) {
-        return false;
-      }
-    }
-    return true;
+    project.data = JSON.parse(localStorage.getItem('template_' + $scope.savedTemplateId));
   }
 
   $scope.saveProject = function() {
-    if (!$scope.canSave) {
+    if (!project.canSave) {
       $site.displayNotification("You'll need to add photos to all placeholders in the design and wait for them to finish uploading before you can save this project.");
       return;
     }
@@ -165,16 +178,16 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
 
   function getSavableProjectData() {
     var photoData = {};
-    for (var id in $scope.projectData.photos) {
+    for (var id in project.data.photos) {
       photoData[id] = {
-        imageBounds: $scope.projectData.photos[id].imageBounds,
-        src: $scope.projectData.photos[id].src,
-        rotation: $scope.projectData.photos[id].rotation
+        imageBounds: project.data.photos[id].imageBounds,
+        src: project.data.photos[id].src,
+        rotation: project.data.photos[id].rotation
       }
     }
     var data = {
-      fills: Object.assign({}, $scope.projectData.fills),
-      strokes: Object.assign({}, $scope.projectData.strokes),
+      fills: Object.assign({}, project.data.fills),
+      strokes: Object.assign({}, project.data.strokes),
       photos: photoData
     }
     return data;
@@ -185,7 +198,7 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
   }
 
   $scope.addToCart = function() {
-    if (!$scope.canSave) {
+    if (!project.canSave) {
       $site.displayNotification("You'll need to add photos to all placeholders in the design and wait for them to finish uploading before you can add this project to your cart.");
       return;
     }
@@ -206,9 +219,9 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
       'name': $scope.templateProduct.productName,
       'qty': 1,
       'price': $scope.templateProduct.price,
-      'projectData': $scope.projectData,
+      'projectData': project.data,
       'size': {},
-      'svg': $scope.svg.outerHTML
+      'svg': project.svg.outerHTML
     };
     localStorage.setItem('item' + item.guid, JSON.stringify(item));
     cart.items.push(item.guid);
@@ -231,20 +244,22 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
   }
 
   $scope.colorize = function(colorString) {
-    // TODO: call colorize() in the canvas-designer directive
     $scope.$broadcast("colorize", colorString);
   }
 
   $scope.choosePhoto = function(photo) {
-    // TODO: call choosePhoto() in the canvas-designer directive
     $scope.$broadcast("choosePhoto", photo);
     $scope.toggleAperturaPhotoPicker();
   }
 
+  $scope.$on("colorizerIsDisplayed", function($event, data) {
+    $scope.colorizerIsDisplayed = data;
+  });
+
   $scope.toggleColorizer = function() {
     $scope.colorizerIsDisplayed = $scope.colorizerIsDisplayed ? false : true;
     if (!$scope.colorizerIsDisplayed) {
-      deselectActiveElementIfAny();
+      $scope.$broadcast("colorizerIsDisplayed", false);
     }
   }
 

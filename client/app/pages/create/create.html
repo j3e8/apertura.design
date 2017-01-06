@@ -10,31 +10,38 @@
 
   <section class="breathe" ng-hide="isLoadingTemplate">
     <div class="row row--spaced row--vertical-bottom" id="instructions-top">
-      <div class="row__cell">
+      <div class="row__cell row__cell--fixed relative">
+        <img ng-click="switchToImageWrap()" src="/app/assets/images/image-wrap.svg">
+        <div class="checkmark" ng-show="templateProduct.edge == 'wrap'"><i class="material-icons">check</i></div>
       </div>
-      <div class="row__cell row__cell--fixed text-right">
-        <div class="row row--spaced" ng-show="otherOrientation">
-          <div class="row__cell">
-            <span ng-click="switchToOtherOrientation()" class="icon icon-arrow-180 clickable orientation-switch" ng-attr-title="Switch to {{ otherOrientation }}"></span>
-          </div>
-          <div class="row__cell row__cell--fixed text-left">
-            <div class="text-sm clickable" ng-click="switchToOtherOrientation()">Switch to<br>{{ otherOrientation }}</div>
-          </div>
-        </div>
+      <div class="row__cell row__cell--fixed relative">
+        <img ng-click="switchToBlackEdge()" src="/app/assets/images/black-wrap.svg">
+      </div>
+      <div class="row__cell row__cell--fixed relative">
+        <img ng-click="switchToWhiteEdge()" src="/app/assets/images/white-wrap.svg">
+      </div>
+      <div class="row__cell"></div>
+      <div class="row__cell row__cell--fixed relative">
+        <img ng-click="switchToPortrait()" src="/app/assets/images/portrait.svg">
+        <div class="checkmark" ng-show="templateProduct.orientation == 'portrait'"><i class="material-icons">check</i></div>
+      </div>
+      <div class="row__cell row__cell--fixed relative">
+        <img ng-click="switchToLandscape()" src="/app/assets/images/landscape.svg">
+        <div class="checkmark" ng-show="templateProduct.orientation == 'landscape'"><i class="material-icons">check</i></div>
       </div>
     </div>
     <hr>
-    <canvas-designer project-data="projectData" template-product="templateProduct"></canvas-designer>
+    <canvas-designer template-product="templateProduct"></canvas-designer>
   </section>
 
   <design-tips></design-tips>
 
   <div class="buttons text-center" ng-hide="isLoadingTemplate">
-    <button ng-click="saveProject()" ng-class="{'disabled': !canSave}" style="display: none;">Save</button>
+    <button ng-click="saveProject()" ng-class="{'disabled': !project.canSave}" style="display: none;">Save</button>
     <!--<button ng-click="printProject()">Print</button>-->
-    <button ng-click="addToCart()" ng-class="{'disabled': !canSave}">Add to cart</button>
-    <div class="breathe warning" ng-show="projectStatus">
-      {{ projectStatus }}
+    <button ng-click="addToCart()" ng-class="{'disabled': !project.canSave}">Add to cart</button>
+    <div class="breathe warning" ng-show="project.status">
+      {{ project.status }}
       <wait-indicator></wait-indicator>
     </div>
   </div>

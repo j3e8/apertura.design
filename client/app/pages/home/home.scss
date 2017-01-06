@@ -8,7 +8,7 @@
       margin: 0 auto;
     }
   }
-  
+
   h1 {
     a {
       text-decoration: none;
@@ -19,14 +19,14 @@
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 800px;
+    height: 620px;
     position: relative;
 
     @media (max-width: 1600px) {
       height: 600px;
     }
 
-    @media (max-width: 1400px) {
+    @media (max-width: 1200px) {
       height: 480px;
     }
 
@@ -37,11 +37,14 @@
       height: 200px;
     }
   }
+  #canvas-hero {
+    background-image: url(assets/images/home/canvas-prints5.jpg);
+  }
   #design-template-hero {
-    background-image: url(assets/images/template-hero.jpg);
+    background-image: url(assets/images/home/template-hero.jpg);
   }
   #photos-hero {
-    background-image: url(assets/images/print-hero.jpg);
+    background-image: url(assets/images/home/print-hero.jpg);
   }
 
   section.last {

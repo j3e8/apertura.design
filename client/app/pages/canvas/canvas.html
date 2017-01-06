@@ -1,30 +1,54 @@
-<div class="content canvas-page">
+<div class="canvas-page">
+  <div id="canvas-header"></div>
 
-  <h1>Canvas prints</h1>
-  A beautiful canvas print can add to any room. From large wall-hanging prints to small mantle-top portraits, photos printed on canvas
-  add an element of style to any decor style. Canvas prints from Apertura are stretched
-  around a wood frame with a backboard for strength and easy hanging. Most sizes can be customized with an image-wrapped edge or a solid color.
+  <div class="content">
+    <h1>Canvas prints</h1>
+    A beautiful canvas print can add to any room. From large wall-hanging prints to small mantle-top portraits, photos printed on canvas
+    add an element of style to any decor style. Canvas prints from Apertura are stretched
+    around a wood frame with a backboard for strength and easy hanging. Most sizes can be customized with an image-wrapped edge or a solid color.
 
-  <section class="breathe">
-    <div class="text-center" ng-show="isLoading">
-      <wait-indicator></wait-indicator>
-    </div>
+    <section class="breathe">
+      <div class="text-center" ng-show="isLoading">
+        <wait-indicator></wait-indicator>
+      </div>
 
-    <div ng-show="!isLoading" class="floating">
-      <h2>Choose your canvas size</h2>
-      <div class="product" ng-repeat="t in templates">
-        <a ng-href="/app/create/{{ t.templateProductId }}">
-          <div class="row row--spaced">
-            <div class="row__cell">
-              {{ t.productName }}
+      <div ng-show="!isLoading" class="floating">
+        <h2>Choose your canvas size</h2>
+        <div class="product" ng-repeat="t in templates">
+          <a ng-href="/app/create/{{ t.templateProductId }}">
+            <div class="row row--spaced">
+              <div class="row__cell">
+                {{ t.productName }}
+              </div>
+              <div class="row__cell row__cell--fixed price">
+                {{ t.price | currency:'$' }}
+              </div>
             </div>
-            <div class="row__cell row__cell--fixed price">
-              {{ t.price | currency:'$' }}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="breathe">
+      <div class="floating">
+        <div class="row row--wrap">
+          <div class="row__cell detail-column">
+            <img src="/app/assets/images/canvas/hooks.jpg">
+            <div class="breathe">
+              <h2>Ready to hang</h2>
+              With mounting hardware pre-installed, your canvas will be ready to hang in portrait or landscape orientation right out of the box.
             </div>
           </div>
-        </a>
+          <div class="row__cell detail-column">
+            <img src="/app/assets/images/canvas/edges.jpg">
+            <div class="breathe">
+              <h2>Customizable edges</h2>
+              Choose from classic image wrap or a dramatic colored edge for your canvas print. Our easy-to-use canvas designer makes it simple to see all your options.
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
+  </div>
 </div>

@@ -1,8 +1,7 @@
-app.directive("canvasDesigner", ["$http", function($http) {
+app.directive("canvasDesigner", ["$http", "project", function($http, project) {
   return {
     restrict: 'E',
     scope: {
-      projectData: '=',
       templateProduct: '='
     },
     templateUrl: '/app/components/canvas-designer/canvas-designer.html',
@@ -10,6 +9,8 @@ app.directive("canvasDesigner", ["$http", function($http) {
       var elementToFill = null;
       var elementToStroke = null;
       var PHOTO_PLACEHOLDER_COLOR = "#D0D2D3";
+      var IMAGE_WRAP_EDGE_COLOR = "#231F20";
+      var IMAGE_WRAP_EDGE_OPACITY = 0.5;
 
       var placeholderImg = new Image();
       placeholderImg.src = SITE_PATH + "/assets/images/photo-placeholder.svg";
@@ -19,7 +20,7 @@ app.directive("canvasDesigner", ["$http", function($http) {
       var isDraggingPhoto = false;
       var lastMousePt = {};
 
-      $scope.svg = null;
+      $scope.project = project;
 
       $scope.imageWaitIndicatorIsDisplayed = false;
       $scope.imageWaitIndicatorPosition = {
@@ -27,19 +28,25 @@ app.directive("canvasDesigner", ["$http", function($http) {
         top: 0
       };
 
-      $scope.$watch("projectData", function() {
-        if ($scope.projectData) {
-          console.log("canvas-designer.js", 'projectData', $scope.projectData);
-          if (!$scope.projectData.photos) {
-            $scope.projectData.photos = {};
+      $scope.$watch("project.data", function() {
+        if (project.data) {
+          console.log("canvas-designer.js", 'project.data', project.data);
+          if (!project.data.photos) {
+            project.data.photos = {};
           }
-          if (!$scope.projectData.fills) {
-            $scope.projectData.fills = {};
+          if (!project.data.fills) {
+            project.data.fills = {};
           }
-          if (!$scope.projectData.strokes) {
-            $scope.projectData.strokes = {};
+          if (!project.data.strokes) {
+            project.data.strokes = {};
           }
           applyProjectData();
+        }
+      });
+
+      $scope.$watch("project.data.edgeColor", function() {
+        if (project.data.edgeColor) {
+          applyColoredEdges(project.svg, project.data.edgeColor);
         }
       });
 
@@ -47,6 +54,7 @@ app.directive("canvasDesigner", ["$http", function($http) {
         console.log("canvas-designer.js", 'templateProduct', $scope.templateProduct);
         if ($scope.templateProduct && $scope.templateProduct.filename) {
           loadSvg(function() {
+            applyProjectData();
             $scope.$emit("svgLoaded");
           });
         }
@@ -64,28 +72,39 @@ app.directive("canvasDesigner", ["$http", function($http) {
         choosePhoto(data);
       });
 
+      $scope.$on("colorizerIsDisplayed", function($event, data) {
+        if (data === false) {
+          deselectActiveElementIfAny();
+        }
+      });
+
       function applyProjectData() {
-        console.log('canvas-designer.js', 'applyProjectData()');
-        if ($scope.projectData.fills) {
-          for (var id in $scope.projectData.fills) {
-            var fillElement = $scope.svg.getElementById(id);
-            applyFillToElement(fillElement, $scope.projectData.fills[id].color);
+        if (project.data.fills) {
+          for (var id in project.data.fills) {
+            var fillElement = project.svg.getElementById(id);
+            applyFillToElement(fillElement, project.data.fills[id].color);
           }
         }
-        if ($scope.projectData.strokes) {
-          for (var id in $scope.projectData.strokes) {
-            var strokeElement = $scope.svg.getElementById(id);
-            applyStrokeToElement(strokeElement, $scope.projectData.strokes[id].color);
+        if (project.data.strokes) {
+          for (var id in project.data.strokes) {
+            var strokeElement = project.svg.getElementById(id);
+            applyStrokeToElement(strokeElement, project.data.strokes[id].color);
           }
         }
-        if ($scope.projectData.photos) {
-          for (var id in $scope.projectData.photos) {
-            var photoElement = $scope.svg.getElementById(id);
-            $scope.projectData.photos[id].element = photoElement;
-            $scope.projectData.photos[id].image = null;
-            $scope.projectData.photos[id].shapeBounds = Svg.calculateSvgElementBounds(photoElement);
-            placeImage(projectData.photos[id]);
+        if (project.data.photos) {
+          for (var id in project.data.photos) {
+            var photoElement = project.svg.getElementById(id);
+            project.data.photos[id].element = photoElement;
+            project.data.photos[id].image = null;
+            project.data.photos[id].shapeBounds = Svg.calculateSvgElementBounds(photoElement);
+            placeImage(project.data.photos[id]);
           }
+        }
+        if ($scope.templateProduct.templateType == 'canvas') {
+          addEdgeStyles(artboard);
+        }
+        if (project.data.edgeColor) {
+          applyColoredEdges(project.svg, project.data.edgeColor);
         }
       }
 
@@ -93,22 +112,23 @@ app.directive("canvasDesigner", ["$http", function($http) {
         if (!$scope.templateProduct || !$scope.templateProduct.filename) {
           return;
         }
-        console.log('canvas-designer.js', 'loadSvg()');
         var xhr = new XMLHttpRequest;
         xhr.open('get', SITE_PATH + '/assets/templates/svg/' + $scope.templateProduct.filename, true);
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4) {
             var tmpsvg = xhr.responseXML.documentElement;
-            $scope.svg = document.importNode(tmpsvg, true);
+            project.svg = document.importNode(tmpsvg, true);
             var artboard = document.getElementById('artboard');
             artboard.innerHTML = '';
-            artboard.appendChild($scope.svg);
+            artboard.appendChild(project.svg);
 
-            resizeSvgToFitArtboard($scope.svg, artboard);
+            resizeSvgToFitArtboard(project.svg, artboard);
 
             addPhotoClickHandlers(artboard);
             addFillClickHandlers(artboard);
-            // addStrokeClickHandlers(artboard);
+            if ($scope.templateProduct.templateType == 'canvas') {
+              addEdgeStyles(artboard);
+            }
             if (callback) {
               callback();
             }
@@ -149,12 +169,14 @@ app.directive("canvasDesigner", ["$http", function($http) {
 
       function openPhoto(imgFile) {
         ga('send', 'event', 'openPhoto', $scope.templateId);
-        if (!$scope.projectData.photos[elementToPhotoBomb.id]) {
-          $scope.projectData.photos[elementToPhotoBomb.id] = {};
+        if (!project.data.photos[elementToPhotoBomb.id]) {
+          project.data.photos[elementToPhotoBomb.id] = {};
         }
-        var projectPhoto = $scope.projectData.photos[elementToPhotoBomb.id];
+        var projectPhoto = project.data.photos[elementToPhotoBomb.id];
         projectPhoto.isUploading = true;
         projectPhoto.element = elementToPhotoBomb;
+        project.canSave = false;
+        project.status = 'Uploading photo...';
 
         EXIF.getData(imgFile, function() {
           var orientation = EXIF.getTag(imgFile, 'Orientation');
@@ -186,7 +208,7 @@ app.directive("canvasDesigner", ["$http", function($http) {
                 projectPhoto.base64 = undefined;
                 projectPhoto.isUploading = false;
                 projectPhoto.isUploaded = true;
-                determineSavability();
+                project.determineSavability();
               });
 
               $scope.$apply(function() {
@@ -218,10 +240,10 @@ app.directive("canvasDesigner", ["$http", function($http) {
 
           ga('send', 'event', 'choosePhoto', $scope.templateId);
 
-          if (!$scope.projectData.photos[elementToPhotoBomb.id]) {
-            $scope.projectData.photos[elementToPhotoBomb.id] = {};
+          if (!project.data.photos[elementToPhotoBomb.id]) {
+            project.data.photos[elementToPhotoBomb.id] = {};
           }
-          var projectPhoto = $scope.projectData.photos[elementToPhotoBomb.id];
+          var projectPhoto = project.data.photos[elementToPhotoBomb.id];
           projectPhoto.element = elementToPhotoBomb;
           projectPhoto.src = 'https://' + DOMAIN + '/' + photo.filename;
           projectPhoto.thumbnailSrc = projectPhoto.src + '/1920';
@@ -241,10 +263,10 @@ app.directive("canvasDesigner", ["$http", function($http) {
           return;
         }
 
-        var defs = Svg.getDefsNode($scope.svg);
+        var defs = Svg.getDefsNode(project.svg);
         if (!defs) {
           defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-          $scope.svg.insertBefore(defs, $scope.svg.firstChild);
+          project.svg.insertBefore(defs, project.svg.firstChild);
         }
 
         var clippath = getOrCreateClipPath(projectPhoto, defs);
@@ -265,17 +287,17 @@ app.directive("canvasDesigner", ["$http", function($http) {
 
       function colorize(colorString) {
         if (elementToFill) {
-          if (!$scope.projectData.fills[elementToFill.id]) {
-            $scope.projectData.fills[elementToFill.id] = {};
+          if (!project.data.fills[elementToFill.id]) {
+            project.data.fills[elementToFill.id] = {};
           }
-          $scope.projectData.fills[elementToFill.id].color = colorString;
+          project.data.fills[elementToFill.id].color = colorString;
           applyFillToElement(elementToFill, colorString);
         }
         else if (elementToStroke) {
-          if (!$scope.projectData.strokes[elementToStroke.id]) {
-            $scope.projectData.strokes[elementToStroke.id] = {};
+          if (!project.data.strokes[elementToStroke.id]) {
+            project.data.strokes[elementToStroke.id] = {};
           }
-          $scope.projectData.strokes[elementToStroke.id].color = colorString;
+          project.data.strokes[elementToStroke.id].color = colorString;
           applyStrokeToElement(elementToStroke, colorString);
         }
       }
@@ -455,18 +477,18 @@ app.directive("canvasDesigner", ["$http", function($http) {
       }
 
       function addPlaceholderIcon(element) {
-        var defs = Svg.getDefsNode($scope.svg);
+        var defs = Svg.getDefsNode(project.svg);
         if (!defs) {
           defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-          $scope.svg.insertBefore(defs, $scope.svg.firstChild);
+          project.svg.insertBefore(defs, project.svg.firstChild);
         }
         var patternId = "pattern_" + element.id;
         pattern = document.createElementNS('http://www.w3.org/2000/svg','pattern');
         pattern.id = patternId;
         pattern.setAttribute('patternUnits', "userSpaceOnUse");
         var svgSize = {
-          width: parseFloat($scope.svg.getAttribute('width')) || $scope.svg.getAttribute('viewBox').split(' ')[2],
-          height: parseFloat($scope.svg.getAttribute('height')) || $scope.svg.getAttribute('viewBox').split(' ')[3]
+          width: parseFloat(project.svg.getAttribute('width')) || project.svg.getAttribute('viewBox').split(' ')[2],
+          height: parseFloat(project.svg.getAttribute('height')) || project.svg.getAttribute('viewBox').split(' ')[3]
         };
         pattern.setAttribute('width', svgSize.width);
         pattern.setAttribute('height', svgSize.height);
@@ -479,13 +501,13 @@ app.directive("canvasDesigner", ["$http", function($http) {
         pattern.appendChild(rect);
 
         var placeholderSvgImage = document.createElementNS('http://www.w3.org/2000/svg','image');
-        if (!$scope.projectData.photos[element.id]) {
-          $scope.projectData.photos[element.id] = {};
+        if (!project.data.photos[element.id]) {
+          project.data.photos[element.id] = {};
         }
-        var projectPhoto = $scope.projectData.photos[element.id];
+        var projectPhoto = project.data.photos[element.id];
         projectPhoto.shapeBounds = Svg.calculateSvgElementBounds(element);
 
-        var pxPerPt = $scope.svg.getBoundingClientRect().width / svgSize.width;
+        var pxPerPt = project.svg.getBoundingClientRect().width / svgSize.width;
 
         var placeholderIconSize = {
           width: 40 / pxPerPt,
@@ -515,6 +537,50 @@ app.directive("canvasDesigner", ["$http", function($http) {
         if (element.childNodes) {
           for (var i=0; i < element.childNodes.length; i++) {
             addFillClickHandlers(element.childNodes[i]);
+          }
+        }
+      }
+
+      function addEdgeStyles(element) {
+        if (!element) {
+          return;
+        }
+        if (element.id && element.id.indexOf("edge") == 0) {
+          if (element.removeAttribute) {
+            element.removeAttribute('fill');
+            element.removeAttribute('stroke');
+          }
+          if ($scope.templateProduct.edge == 'wrap') {
+            element.style.cursor = "default";
+            element.removeEventListener("click", handleFillClick);
+            element.style.backgroundColor = IMAGE_WRAP_EDGE_COLOR;
+            element.style.opacity = IMAGE_WRAP_EDGE_OPACITY;
+          }
+          else {
+            element.style.cursor = "pointer";
+            element.addEventListener("click", handleFillClick);
+            element.style.backgroundColor = null;
+            element.style.opacity = null;
+            applyColoredEdges(element, project.data.edgeColor);
+          }
+        }
+        if (element.childNodes) {
+          for (var i=0; i < element.childNodes.length; i++) {
+            addEdgeStyles(element.childNodes[i]);
+          }
+        }
+      }
+
+      function applyColoredEdges(element, edgeColor) {
+        if (!element) {
+          return;
+        }
+        if (element.id && element.id.indexOf("edge") == 0) {
+          applyFillToElement(element, edgeColor);
+        }
+        if (element.childNodes) {
+          for (var i=0; i < element.childNodes.length; i++) {
+            applyColoredEdges(element.childNodes[i], edgeColor);
           }
         }
       }
@@ -549,9 +615,9 @@ app.directive("canvasDesigner", ["$http", function($http) {
       function handlePhotoDown(targetElement, x, y) {
         isDraggingPhoto = false;
         elementToDrag = getPhotoElementFromClickedElement(targetElement);
-        if (elementToDrag && $scope.projectData.photos[elementToDrag.id] && $scope.projectData.photos[elementToDrag.id].image) {
-          var imageBounds = $scope.projectData.photos[elementToDrag.id].imageBounds;
-          var svgBounds = $scope.svg.getBoundingClientRect();
+        if (elementToDrag && project.data.photos[elementToDrag.id] && project.data.photos[elementToDrag.id].image) {
+          var imageBounds = project.data.photos[elementToDrag.id].imageBounds;
+          var svgBounds = project.svg.getBoundingClientRect();
           elementToDragClickPt = {
             'x': (x - svgBounds.left),
             'y': (y - svgBounds.top)
@@ -578,14 +644,14 @@ app.directive("canvasDesigner", ["$http", function($http) {
       function handlePhotoMove(x, y) {
         if ((x != lastMousePt.x || y != lastMousePt.y)
           && elementToDrag
-          && $scope.projectData.photos[elementToDrag.id]
-          && $scope.projectData.photos[elementToDrag.id].image) {
+          && project.data.photos[elementToDrag.id]
+          && project.data.photos[elementToDrag.id].image) {
             isDraggingPhoto = true;
         }
 
         if (isDraggingPhoto) {
-          var newLocation = calculateNewPhotoPosition($scope.projectData.photos[elementToDrag.id], x, y);
-          var svgimage = $scope.projectData.photos[elementToDrag.id].image;
+          var newLocation = calculateNewPhotoPosition(project.data.photos[elementToDrag.id], x, y);
+          var svgimage = project.data.photos[elementToDrag.id].image;
           svgimage.setAttribute('x', newLocation.x);
           svgimage.setAttribute('y', newLocation.y);
         }
@@ -609,15 +675,15 @@ app.directive("canvasDesigner", ["$http", function($http) {
 
       function handlePhotoUp(x, y) {
         if (isDraggingPhoto) {
-          if (elementToDrag && $scope.projectData.photos[elementToDrag.id] && $scope.projectData.photos[elementToDrag.id].image) {
-            var newLocation = calculateNewPhotoPosition($scope.projectData.photos[elementToDrag.id], x, y);
-            var svgimage = $scope.projectData.photos[elementToDrag.id].image;
+          if (elementToDrag && project.data.photos[elementToDrag.id] && project.data.photos[elementToDrag.id].image) {
+            var newLocation = calculateNewPhotoPosition(project.data.photos[elementToDrag.id], x, y);
+            var svgimage = project.data.photos[elementToDrag.id].image;
             svgimage.setAttribute('x', newLocation.x);
             svgimage.setAttribute('y', newLocation.y);
-            $scope.projectData.photos[elementToDrag.id].imageBounds.left = newLocation.x;
-            $scope.projectData.photos[elementToDrag.id].imageBounds.right = newLocation.x + $scope.projectData.photos[elementToDrag.id].imageBounds.width;
-            $scope.projectData.photos[elementToDrag.id].imageBounds.top = newLocation.y;
-            $scope.projectData.photos[elementToDrag.id].imageBounds.bottom = newLocation.y + $scope.projectData.photos[elementToDrag.id].imageBounds.height;
+            project.data.photos[elementToDrag.id].imageBounds.left = newLocation.x;
+            project.data.photos[elementToDrag.id].imageBounds.right = newLocation.x + project.data.photos[elementToDrag.id].imageBounds.width;
+            project.data.photos[elementToDrag.id].imageBounds.top = newLocation.y;
+            project.data.photos[elementToDrag.id].imageBounds.bottom = newLocation.y + project.data.photos[elementToDrag.id].imageBounds.height;
           }
         }
         else {
@@ -634,7 +700,7 @@ app.directive("canvasDesigner", ["$http", function($http) {
       function calculateNewPhotoPosition(projectPhoto, clickX, clickY) {
         var shapeBounds = projectPhoto.shapeBounds;
         var imageBounds = projectPhoto.imageBounds;
-        var svgBounds = $scope.svg.getBoundingClientRect();
+        var svgBounds = project.svg.getBoundingClientRect();
         var move = {
           x: (clickX - svgBounds.left) - elementToDragClickPt.x,
           y: (clickY - svgBounds.top) - elementToDragClickPt.y
@@ -683,7 +749,20 @@ app.directive("canvasDesigner", ["$http", function($http) {
             elementToFill = elementToFill.parentNode;
           }
           angular.element(elementToFill).addClass('selected');
-          $scope.colorizerIsDisplayed = true;
+          $scope.$emit("colorizerIsDisplayed", true);
+        });
+      }
+
+      function handleEdgeClick(event) {
+        deselectActiveElementIfAny();
+        var artboard = document.getElementById('artboard');
+        $scope.$apply(function() {
+          elementToFill = event.target;
+          while (elementToFill.id.indexOf("edge") != 0 && elementToFill != artboard) {
+            elementToFill = elementToFill.parentNode;
+          }
+          angular.element(elementToFill).addClass('selected');
+          $scope.$emit("colorizerIsDisplayed", true);
         });
       }
 

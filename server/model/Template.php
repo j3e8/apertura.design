@@ -140,7 +140,7 @@ class Template {
       p.sku, p.name as productName, p.price,
       pp.width, pp.height, pp.externalId,
       pm.medium,
-      tf.filename, tf.orientation
+      tf.filename, tf.orientation, tf.edge
       FROM templates as t
       LEFT JOIN templateProducts as tp ON t.id=tp.templateId
       LEFT JOIN templateFiles as tf ON tf.id=tp.templateFileId
@@ -299,7 +299,7 @@ class Template {
   }
 
   public static function get_rotated_template_product($templateProductId) {
-    $sql = "SELECT templateId, templateFileId, sku, tf.orientation
+    $sql = "SELECT templateId, templateFileId, sku, tf.orientation, tf.edge
       FROM templateProducts AS tp
       INNER JOIN templateFiles AS tf ON tp.templateFileId=tf.id
       WHERE tp.id=$templateProductId";
@@ -313,7 +313,8 @@ class Template {
         WHERE templateId={$row['templateId']}
         AND sku='$_sku'
         AND templateFileId!={$row['templateFileId']}
-        AND tf.orientation!='{$row['orientation']}'";
+        AND tf.orientation!='{$row['orientation']}'
+        AND tf.edge='{$row['edge']}'";
       $results = db_query($sql);
       $row = db_fetch_assoc($results);
       return $row;
@@ -323,6 +324,31 @@ class Template {
     }
   }
 
+  public static function get_template_product_edge_options($templateProductId) {
+    $sql = "SELECT templateId, templateFileId, sku, tf.orientation, tf.edge
+      FROM templateProducts AS tp
+      INNER JOIN templateFiles AS tf ON tp.templateFileId=tf.id
+      WHERE tp.id=$templateProductId";
+    $results = db_query($sql);
+    $row = db_fetch_assoc($results);
+
+    if ($row) {
+      $_sku = db_escape($row['sku']);
+      $sql = "SELECT tp.id, tf.edge FROM templateProducts AS tp
+        INNER JOIN templateFiles AS tf ON tp.templateFileId=tf.id
+        WHERE templateId={$row['templateId']}
+        AND sku='$_sku'
+        AND templateFileId!={$row['templateFileId']}
+        AND tf.orientation='{$row['orientation']}'
+        AND tf.edge!='{$row['edge']}'";
+      $results = db_query($sql);
+      $row = db_fetch_assoc($results);
+      return $row;
+    }
+    else {
+      return null;
+    }
+  }
 
 
   /*** PRIVATE ***/
