@@ -1,0 +1,371 @@
+app.controller("createController", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
+  $scope.templateId = $routeParams.templateId;
+  $scope.template = {};
+
+  var artboard = document.getElementById('artboard');
+  var svg = null;
+
+  $scope.swatches = [
+    { color: '#fff' },
+    { color: '#000' },
+    { color: '#444' },
+    { color: '#888' },
+    { color: '#a2a3a4' },
+    { color: '#e6e7e8' },
+    { color: '#FFD2C5' },
+    { color: '#FFD389' },
+    { color: '#CAD1E4' },
+    { color: '#BAAFC9' },
+    { color: '#5E6371' }
+  ];
+
+  $scope.colorizerIsDisplayed = undefined;
+  $scope.photoSourcesIsDisplayed = undefined;
+  $scope.aperturaPhotoPickerIsDisplayed = undefined;
+  $scope.lastSource = null;
+
+  $http.post(API_URL + "/Template/get_template", {
+    templateId: $scope.templateId
+  }).then(function(response) {
+    $scope.template = response.data.results;
+    updateCssPageSize();
+  }, function(error) {
+    console.log(error);
+  });
+
+  (function init() {
+    createHiddenInputForPhotoUpload();
+    loadSvg();
+  })();
+
+  function createHiddenInputForPhotoUpload() {
+    var input = document.createElement("input");
+    input.type = "file";
+    input.style.display = "none";
+    document.body.appendChild(input);
+  }
+
+  function loadSvg() {
+    var xhr = new XMLHttpRequest;
+    xhr.open('get', SITE_PATH + '/assets/templates/' + $routeParams.templateId + '.svg', true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        var tmpsvg = xhr.responseXML.documentElement;
+        svg = document.importNode(tmpsvg, true);
+        artboard.appendChild(svg);
+        addPhotoClickHandlers(artboard);
+        addFillClickHandlers(artboard);
+        $scope.$apply();
+      }
+    };
+    xhr.send();
+  }
+
+  var pageStyleElement = null;
+  function updateCssPageSize() {
+    var newPrintSize = {
+      width: $scope.template.width,
+      height: $scope.template.height
+    };
+    if (!pageStyleElement) {
+      pageStyleElement = document.createElement("style");
+      pageStyleElement.type = "text/css";
+      document.head.appendChild(pageStyleElement);
+    }
+    pageStyleElement.innerHTML = "@page { size: " + newPrintSize.width + "in " + newPrintSize.height + "in; margin: 0in; }";
+    pageStyleElement.innerHTML += "@media print { #artboard { width: " + newPrintSize.width + "in; height: " + newPrintSize.height + "in; } }";
+  }
+
+  $scope.saveProject = function() {
+
+  }
+
+  $scope.printProject = function() {
+    window.print();
+  }
+
+  $scope.orderProject = function() {
+
+  }
+
+  $scope.colorize = function(colorString) {
+    $scope.toggleColorizer();
+    if (elementToFill) {
+      applyFillToElement(elementToFill, colorString);
+    }
+    else if (elementToStroke) {
+      console.log("stroking: ", elementToStroke);
+      applyStrokeToElement(elementToStroke, colorString);
+    }
+  }
+
+  $scope.choosePhoto = function(photo) {
+    $scope.placeImage('/' + photo.filename);
+    $scope.toggleAperturaPhotoPicker();
+  }
+
+  $scope.placeImage = function(src) {
+    if (elementToPhotoBomb) {
+      console.log("placing image", src);
+
+      var defs = getDefsNode(svg);
+      if (!defs) {
+        defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+        svg.insertBefore(defs, svg.firstChild);
+      }
+      var patternId = 'pattern_' + elementToPhotoBomb.id;
+      var pattern = getPatternNode(defs, patternId);
+      if (!pattern) {
+        pattern = document.createElementNS('http://www.w3.org/2000/svg','pattern');
+        pattern.id = patternId;
+        pattern.setAttribute('patternUnits', "userSpaceOnUse");
+        var svgSize = {
+          width: svg.getAttribute('width') || svg.getAttribute('viewBox').split(' ')[2],
+          height: svg.getAttribute('height') || svg.getAttribute('viewBox').split(' ')[3]
+        };
+        pattern.setAttribute('width', svgSize.width);
+        pattern.setAttribute('height', svgSize.height);
+        defs.appendChild(pattern);
+      }
+      var svgElementBounds = calculateSvgElementBounds(elementToPhotoBomb);
+      var elementRatio = svgElementBounds.width / svgElementBounds.height;
+      var svgimage = pattern.getElementsByTagName('image')[0];
+      if (!svgimage) {
+        svgimage = document.createElementNS('http://www.w3.org/2000/svg','image');
+        pattern.appendChild(svgimage);
+      }
+      svgimage.setAttribute('x', '-100in');
+      svgimage.setAttribute('y', '-100in');
+
+      var image = new Image();
+      image.onload = function() {
+        var imgRatio = this.width / this.height;
+
+        var newImgSize = {
+          width: svgElementBounds.width,
+          height: svgElementBounds.height
+        };
+        if (imgRatio > elementRatio) {
+          newImgSize.width = newImgSize.height * imgRatio;
+        }
+        else {
+          newImgSize.height = newImgSize.width / imgRatio;
+        }
+        svgimage.setAttribute('width', newImgSize.width);
+        svgimage.setAttribute('height', newImgSize.height);
+
+        var svgX = svgElementBounds.left || 0;
+        var svgY = svgElementBounds.top || 0;
+        var svgWidth = svgElementBounds.width || 0;
+        var svgHeight = svgElementBounds.height || 0;
+        var x = Number(svgX) + (svgWidth - newImgSize.width) / 2;
+        var y = Number(svgY) + (svgHeight - newImgSize.height) / 2;
+        svgimage.setAttribute('x', x);
+        svgimage.setAttribute('y', y);
+        svgimage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', src + '/1920');
+        elementToPhotoBomb.style.fill = "url(#" + pattern.id + ")";
+      }
+      image.src = src + '/1920';
+    }
+  }
+
+  function calculateSvgElementBounds(element) {
+    var bounds = {
+      left: element.getAttribute('x'),
+      top: element.getAttribute('y'),
+      width: element.getAttribute('width'),
+      height: element.getAttribute('height')
+    };
+    bounds.right = bounds.left + bounds.width;
+    bounds.bottom = bounds.top + bounds.height;
+
+    if (element.tagName == 'polygon') {
+      bounds = calculateSvgPolygonBounds(element);
+    }
+    return bounds;
+  }
+
+  function calculateSvgPolygonBounds(element) {
+    var pairs = element.getAttribute('points').split(' ')
+    .filter(function(point) {
+      return point != '';
+    }).map(function(pair) {
+      var parts = pair.split(',');
+      return {
+        x: parts[0],
+        y: parts[1]
+      };
+    });
+    var min = {};
+    var max = {};
+
+    for (var i=0; i < pairs.length; i++) {
+      if (min.x === undefined || Number(pairs[i].x) < min.x) {
+        min.x = Number(pairs[i].x);
+      }
+      if (min.y === undefined || Number(pairs[i].y) < min.y) {
+        min.y = Number(pairs[i].y);
+      }
+      if (max.x === undefined || Number(pairs[i].x) > max.x) {
+        max.x = Number(pairs[i].x);
+      }
+      if (max.y === undefined || Number(pairs[i].y) > max.y) {
+        max.y = Number(pairs[i].y);
+      }
+    }
+
+    var bounds = {
+      left: min.x,
+      top: min.y,
+      width: max.x - min.x,
+      height: max.y - min.y
+    };
+    bounds.right = bounds.left + bounds.width;
+    bounds.bottom = bounds.top + bounds.height;
+
+    return bounds;
+  }
+
+  function getDefsNode(svg) {
+    return svg.getElementsByTagName("defs")[0];
+  }
+
+  function getPatternNode(defs, patternId) {
+    var patternElements = defs.getElementsByTagName("pattern");
+    for (var i=0; i < patternElements.length; i++) {
+      if (patternElements[i].id == patternId) {
+        return patternElements[i];
+      }
+    }
+    return null;
+  }
+
+  $scope.toggleColorizer = function() {
+    console.log("toggleColorizer");
+    $scope.colorizerIsDisplayed = $scope.colorizerIsDisplayed ? false : true;
+  }
+
+  $scope.togglePhotoSources = function() {
+    console.log("togglePhotoSources");
+
+    if (!$scope.photoSourcesIsDisplayed) {
+      if ($scope.lastSource == 'apertura' && !$scope.aperturaPhotoPickerIsDisplayed) {
+        $scope.aperturaPhotoPickerIsDisplayed = true;
+      }
+      else {
+        $scope.aperturaPhotoPickerIsDisplayed = false;
+        $scope.photoSourcesIsDisplayed = true;
+      }
+    }
+    else {
+      $scope.photoSourcesIsDisplayed = false;
+    }
+  }
+
+  $scope.browseForPhoto = function() {
+    $scope.togglePhotoSources();
+    $scope.lastSource = 'device';
+    input.click();
+  }
+
+  $scope.toggleAperturaPhotoPicker = function() {
+    $scope.photoSourcesIsDisplayed = false;
+    $scope.aperturaPhotoPickerIsDisplayed = $scope.aperturaPhotoPickerIsDisplayed ? false : true;
+    $scope.lastSource = 'apertura';
+  }
+
+
+
+
+
+
+  var elementToFill = null;
+  var elementToStroke = null;
+
+  function addPhotoClickHandlers(element) {
+    if (!element) {
+      return;
+    }
+    if (element.id && element.id.indexOf("photo") == 0) {
+      element.style.cursor = "pointer";
+      element.addEventListener("click", handlePhotoClick);
+    }
+    if (element.childNodes) {
+      for (var i=0; i < element.childNodes.length; i++) {
+        addPhotoClickHandlers(element.childNodes[i]);
+      }
+    }
+  }
+
+  function addFillClickHandlers(element) {
+    if (!element) {
+      return;
+    }
+    if (element.id && element.id.indexOf("fill") == 0) {
+      element.style.cursor = "pointer";
+      element.addEventListener("click", handleFillClick);
+      console.log("addEventListener", element);
+    }
+    if (element.childNodes) {
+      for (var i=0; i < element.childNodes.length; i++) {
+        addFillClickHandlers(element.childNodes[i]);
+      }
+    }
+  }
+
+  function handlePhotoClick(event) {
+    $scope.$apply(function() {
+      console.log("photo", event);
+      elementToPhotoBomb = event.target;
+      while (elementToPhotoBomb.id.indexOf("photo") != 0 && elementToPhotoBomb != artboard) {
+        elementToPhotoBomb = elementToFill.parentNode;
+      }
+      $scope.togglePhotoSources();
+    });
+  }
+
+  function handleFillClick(event) {
+    $scope.$apply(function() {
+      elementToFill = event.target;
+      while (elementToFill.id.indexOf("fill") != 0 && elementToFill != artboard) {
+        elementToFill = elementToFill.parentNode;
+      }
+      $scope.toggleColorizer();
+    });
+  }
+
+  function applyStrokeToElement(element, colorString) {
+    console.log("applyStrokeToElement", element);
+    if (element) {
+      if (element.style) {
+        element.style.stroke = colorString;
+      }
+      if (element.removeAttribute) {
+        element.removeAttribute("stroke");
+      }
+      if (element.childNodes) {
+        for (var i=0; i < element.childNodes.length; i++) {
+          applyStrokeToElement(element.childNodes[i], colorString);
+        }
+      }
+    }
+  }
+
+  function applyFillToElement(element, colorString) {
+    console.log("applyFillToElement", element);
+    if (element) {
+      if (element.style) {
+        element.style.fill = colorString;
+      }
+      if (element.removeAttribute) {
+        element.removeAttribute("fill");
+      }
+      if (element.childNodes) {
+        for (var i=0; i < element.childNodes.length; i++) {
+          applyFillToElement(element.childNodes[i], colorString);
+        }
+      }
+    }
+  }
+
+}]);
