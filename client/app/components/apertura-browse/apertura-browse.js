@@ -124,7 +124,7 @@ app.directive("aperturaBrowse", ["$http", "Site", function($http, $site) {
                   if (day.date.getFullYear() == d.getUTCFullYear()
                     && day.date.getMonth() == d.getUTCMonth()
                     && day.date.getDate() == d.getUTCDate()) {
-                    day.backgroundImage = "url(" + dateFolder.filename + "/600?t=" + dateFolder.lastModified + ")";
+                    day.backgroundImage = "url(/" + dateFolder.filename + "/600?t=" + dateFolder.lastModified + ")";
                     day.photoCount = dateFolder.numPhotos;
                   }
                 }
