@@ -61,6 +61,10 @@
       height: 60px;
       width: auto;
       cursor: pointer;
+
+      @media (max-width: 480px) {
+        height: 50px;
+      }
     }
   }
 
