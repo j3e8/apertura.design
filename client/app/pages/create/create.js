@@ -58,6 +58,10 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
         $scope.otherOrientation = response.data.results.orientation;
         $scope.otherOrientationId = response.data.results.id;
       }
+      else {
+        $scope.otherOrientation = null;
+        $scope.otherOrientationId = null;
+      }
     }, function(error) {
       console.error(error);
     });
@@ -69,6 +73,9 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     }).then(function(response) {
       if (response.data.results) {
         $scope.otherEdgeTemplateProductId = response.data.results.id;
+      }
+      else {
+        $scope.otherEdgeTemplateProductId = null;
       }
     }, function(error) {
       console.error(error);

@@ -109,7 +109,6 @@ class Template {
   }
 
   public static function get_canvas_templates() {
-    $_medium = db_escape($medium);
     $templates = [];
     $sql = "SELECT t.id as templateId, tp.id as templateProductId,
       p.name as productName, p.sku, p.price
