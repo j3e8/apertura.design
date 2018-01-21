@@ -288,8 +288,8 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         console.log('elementRect', elementRect);
         $scope.imageWaitIndicatorIsDisplayed = true;
         $scope.imageWaitIndicatorPosition = {
-          left: elementRect.left + elementRect.width / 2 + document.body.scrollLeft,
-          top: elementRect.top + elementRect.height / 2 + document.body.scrollTop
+          left: (elementRect.left + elementRect.width / 2 + document.body.scrollLeft) + "px",
+          top: (elementRect.top + elementRect.height / 2 + document.body.scrollTop) + "px"
         };
 
         console.log('create image object');
@@ -333,10 +333,10 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         projectPhoto.image = getOrCreateSvgImage(projectPhoto);
 
         calculateImageBoundsForPhoto(projectPhoto, this);
-        projectPhoto.image.setAttribute('width', projectPhoto.imageBounds.width);
-        projectPhoto.image.setAttribute('height', projectPhoto.imageBounds.height);
-        projectPhoto.image.setAttribute('x', projectPhoto.imageBounds.left);
-        projectPhoto.image.setAttribute('y', projectPhoto.imageBounds.top);
+        projectPhoto.image.setAttribute('width', projectPhoto.imageBounds.width + "px");
+        projectPhoto.image.setAttribute('height', projectPhoto.imageBounds.height + "px");
+        projectPhoto.image.setAttribute('x', projectPhoto.imageBounds.left + "px");
+        projectPhoto.image.setAttribute('y', projectPhoto.imageBounds.top + "px");
 
         // set the src of the new svg image element to match the javascript img element
         projectPhoto.image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.src);
@@ -536,8 +536,8 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
 
         var x = Number(projectPhoto.shapeBounds.left) + projectPhoto.shapeBounds.width / 2 - (placeholderIconSize.width / 2);
         var y = Number(projectPhoto.shapeBounds.top) + projectPhoto.shapeBounds.height / 2 - (placeholderIconSize.height / 2);
-        placeholderSvgImage.setAttribute('x', x);
-        placeholderSvgImage.setAttribute('y', y);
+        placeholderSvgImage.setAttribute('x', x + "px");
+        placeholderSvgImage.setAttribute('y', y + "px");
         placeholderSvgImage.setAttribute('width', placeholderIconSize.width + 'px');
         placeholderSvgImage.setAttribute('height', placeholderIconSize.height + 'px');
         placeholderSvgImage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', placeholderImg.src);
