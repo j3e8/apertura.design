@@ -61,7 +61,7 @@ gulp.task('main-css', function() {
 
 
 
-gulp.task('all', function() {
+gulp.task('default', function() {
   gulp.start('admin-js');
   gulp.start('app-js');
   gulp.start('artist-js');
