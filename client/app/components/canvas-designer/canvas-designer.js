@@ -378,8 +378,8 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           projectPhoto.image.setAttribute('transform', translate + ' ' + rotate);
         }
         else if (projectPhoto.rotation == 270) {
-          projectPhoto.image.setAttribute('x', 0);
-          projectPhoto.image.setAttribute('y', 0);
+          // projectPhoto.image.setAttribute('x', 0);
+          // projectPhoto.image.setAttribute('y', 0);
           var w = parseFloat(projectPhoto.image.getAttribute('width'));
           var h = parseFloat(projectPhoto.image.getAttribute('height'));
           projectPhoto.image.setAttribute('width', h);
@@ -418,10 +418,15 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         var imageX = Number(projectPhoto.shapeBounds.left) + (projectPhoto.shapeBounds.width - newImgSize.width) / 2;
         var imageY = Number(projectPhoto.shapeBounds.top) + (projectPhoto.shapeBounds.height - newImgSize.height) / 2;
 
-        if (projectPhoto.rotation == 90 || projectPhoto.rotation == 270) {
+        if (projectPhoto.rotation == 90) {
           imageX = 0;
           imageY = 0;
         }
+	if (projectPhoto.rotation == 270) {
+	  imageX = projectPhoto.shapeBounds.left - (newImgSize.height - projectPhoto.shapeBounds.height)/2;
+	  imageY = projectPhoto.shapeBounds.top - (newImgSize.width - projectPhoto.shapeBounds.width)/2;
+	  // 43 - (364.17-241.88)/2
+	}
 
         projectPhoto.imageBounds = {
           left: Number(imageX),
@@ -733,6 +738,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
       function calculateNewPhotoPosition(projectPhoto, clickX, clickY) {
         var shapeBounds = projectPhoto.shapeBounds;
         var imageBounds = projectPhoto.imageBounds;
+	console.log(shapeBounds, imageBounds);
         var svgBounds = project.svg.getBoundingClientRect();
         var move = {
           x: (clickX - svgBounds.left) - elementToDragClickPt.x,
@@ -757,18 +763,36 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           x: Number(imageBounds.left) + move.x,
           y: Number(imageBounds.top) + move.y
         };
-        if (newLocation.x > shapeBounds.left) {
-          newLocation.x = shapeBounds.left;
-        }
-        if (newLocation.x < shapeBounds.left - (imageBounds.width - shapeBounds.width)) {
-          newLocation.x = shapeBounds.left - (imageBounds.width - shapeBounds.width);
-        }
-        if (newLocation.y > shapeBounds.top) {
-          newLocation.y = shapeBounds.top;
-        }
-        if (newLocation.y < shapeBounds.top - (imageBounds.height - shapeBounds.height)) {
-          newLocation.y = shapeBounds.top - (imageBounds.height - shapeBounds.height);
-        }
+
+	if (projectPhoto.rotation == 270) {
+		console.log(newLocation);
+		if (newLocation.x > shapeBounds.left) {
+		  newLocation.x = shapeBounds.left;
+		}
+		if (newLocation.x < shapeBounds.left - (imageBounds.height - shapeBounds.height)) {
+		  newLocation.x = shapeBounds.left - (imageBounds.height - shapeBounds.height);
+		}
+		if (newLocation.y > shapeBounds.top) {
+		  newLocation.y = shapeBounds.top;
+		}
+		if (newLocation.y < shapeBounds.top - (imageBounds.width - shapeBounds.width)) {
+		  newLocation.y = shapeBounds.top - (imageBounds.width - shapeBounds.width);
+		}
+	}
+	else {
+		if (newLocation.x > shapeBounds.left) {
+		  newLocation.x = shapeBounds.left;
+		}
+		if (newLocation.x < shapeBounds.left - (imageBounds.width - shapeBounds.width)) {
+		  newLocation.x = shapeBounds.left - (imageBounds.width - shapeBounds.width);
+		}
+		if (newLocation.y > shapeBounds.top) {
+		  newLocation.y = shapeBounds.top;
+		}
+		if (newLocation.y < shapeBounds.top - (imageBounds.height - shapeBounds.height)) {
+		  newLocation.y = shapeBounds.top - (imageBounds.height - shapeBounds.height);
+		}
+	}
 
         return newLocation;
       }
