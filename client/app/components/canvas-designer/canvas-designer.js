@@ -261,7 +261,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
       function placeImage(projectPhoto) {
         console.log('placeImage');
         var thumbnailSrc = getImageSrc(projectPhoto);
-        console.log('thumbnailSrc', thumbnailSrc);
+        console.log('thumbnailSrc', thumbnailSrc.substring(0, 20));
         if (!thumbnailSrc) {
           return;
         }
