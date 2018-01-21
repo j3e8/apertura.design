@@ -385,10 +385,10 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           projectPhoto.image.setAttribute('width', h);
           projectPhoto.image.setAttribute('height', w);
           var x = projectPhoto.shapeBounds.left - projectPhoto.shapeBounds.top;
-          var y = projectPhoto.shapeBounds.height + projectPhoto.shapeBounds.left + projectPhoto.shapeBounds.top;
-          var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
+          var y = projectPhoto.shapeBounds.width + projectPhoto.shapeBounds.left + projectPhoto.shapeBounds.top;
           var translate = "translate(" + x + "," + y + ")";
-          projectPhoto.image.setAttribute('transform',  rotate + ' ' + translate);
+          var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
+          projectPhoto.image.setAttribute('transform', translate + ' ' + rotate);
         }
       }
 
