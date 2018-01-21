@@ -364,7 +364,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           var rotate = "rotate(" + projectPhoto.rotation + ", " + cx + ", " + cy + ")";
           projectPhoto.image.setAttribute('transform', rotate);
         }
-        else if (projectPhoto.rotation == 90 || projectPhoto.rotation == 270) {
+        else if (projectPhoto.rotation == 90) {
           projectPhoto.image.setAttribute('x', 0);
           projectPhoto.image.setAttribute('y', 0);
           var w = parseFloat(projectPhoto.image.getAttribute('width'));
@@ -376,6 +376,19 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           var translate = "translate(" + x + "," + y + ")";
           var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
           projectPhoto.image.setAttribute('transform', translate + ' ' + rotate);
+        }
+        else if (projectPhoto.rotation == 270) {
+          projectPhoto.image.setAttribute('x', 0);
+          projectPhoto.image.setAttribute('y', 0);
+          var w = parseFloat(projectPhoto.image.getAttribute('width'));
+          var h = parseFloat(projectPhoto.image.getAttribute('height'));
+          projectPhoto.image.setAttribute('width', h);
+          projectPhoto.image.setAttribute('height', w);
+          var x = projectPhoto.shapeBounds.left - projectPhoto.shapeBounds.top;
+          var y = projectPhoto.shapeBounds.height + projectPhoto.shapeBounds.left + projectPhoto.shapeBounds.top;
+          var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
+          var translate = "translate(" + x + "," + y + ")";
+          projectPhoto.image.setAttribute('transform',  rotate + ' ' + translate);
         }
       }
 
