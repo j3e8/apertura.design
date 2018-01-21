@@ -365,21 +365,17 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           projectPhoto.image.setAttribute('transform', rotate);
         }
         else if (projectPhoto.rotation == 90) {
-          projectPhoto.image.setAttribute('x', 0);
-          projectPhoto.image.setAttribute('y', 0);
           var w = parseFloat(projectPhoto.image.getAttribute('width'));
           var h = parseFloat(projectPhoto.image.getAttribute('height'));
           projectPhoto.image.setAttribute('width', h);
           projectPhoto.image.setAttribute('height', w);
-          var x = Number(w) + (projectPhoto.shapeBounds.width - w) / 2;
-          var y = (projectPhoto.shapeBounds.height - h) / 2;
+          var x = projectPhoto.shapeBounds.left + projectPhoto.shapeBounds.top + projectPhoto.shapeBounds.width;
+	  var y = projectPhoto.shapeBounds.top - projectPhoto.shapeBounds.left;
           var translate = "translate(" + x + "," + y + ")";
           var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
           projectPhoto.image.setAttribute('transform', translate + ' ' + rotate);
         }
         else if (projectPhoto.rotation == 270) {
-          // projectPhoto.image.setAttribute('x', 0);
-          // projectPhoto.image.setAttribute('y', 0);
           var w = parseFloat(projectPhoto.image.getAttribute('width'));
           var h = parseFloat(projectPhoto.image.getAttribute('height'));
           projectPhoto.image.setAttribute('width', h);
@@ -418,14 +414,13 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         var imageX = Number(projectPhoto.shapeBounds.left) + (projectPhoto.shapeBounds.width - newImgSize.width) / 2;
         var imageY = Number(projectPhoto.shapeBounds.top) + (projectPhoto.shapeBounds.height - newImgSize.height) / 2;
 
-        if (projectPhoto.rotation == 90) {
+        /*if (projectPhoto.rotation == 90) {
           imageX = 0;
           imageY = 0;
-        }
-	if (projectPhoto.rotation == 270) {
+        }*/
+	if (projectPhoto.rotation == 270 || projectPhoto.rotation == 90) {
 	  imageX = projectPhoto.shapeBounds.left - (newImgSize.height - projectPhoto.shapeBounds.height)/2;
 	  imageY = projectPhoto.shapeBounds.top - (newImgSize.width - projectPhoto.shapeBounds.width)/2;
-	  // 43 - (364.17-241.88)/2
 	}
 
         projectPhoto.imageBounds = {
@@ -747,6 +742,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
 
         if (projectPhoto.rotation == 180) {
           move.x = -move.x;
+          move.y = -move.y;
         }
         else if (projectPhoto.rotation == 90) {
           var y = move.y;
@@ -764,7 +760,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           y: Number(imageBounds.top) + move.y
         };
 
-	if (projectPhoto.rotation == 270) {
+	if (projectPhoto.rotation == 270 || projectPhoto.rotation == 90) {
 		console.log(newLocation);
 		if (newLocation.x > shapeBounds.left) {
 		  newLocation.x = shapeBounds.left;
