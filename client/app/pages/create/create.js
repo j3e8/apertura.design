@@ -12,6 +12,11 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
   $scope.aperturaPhotoPickerIsDisplayed = undefined;
   $scope.lastSource = null;
 
+  $scope.isSizeMenuDisplayed = undefined;
+  $scope.otherSizes = [];
+
+  $scope.project.startNewProject();
+
   var input = document.createElement("input");
   input.type = "file";
   input.accept = ".jpg,.jpeg";
@@ -23,6 +28,15 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     $scope.$broadcast("openPhoto", input.files[0]);
   }
 
+  $scope.applicableTips = [];
+
+  $http.post(API_URL + "/Template/get_canvas_templates")
+  .then(function (response) {
+    $scope.otherSizes = response.data.results;
+  }, function(error) {
+    console.error(error);
+  });
+
   $scope.loadTemplateProduct = function() {
     $scope.isLoadingTemplate = true;
     $http.post(API_URL + "/Template/get_template_product", {
@@ -32,6 +46,16 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
       ga('send', 'event', 'create', $scope.templateId);
       $scope.isLoadingTemplate = false;
       $scope.templateProduct = response.data.results;
+      if ($scope.templateProduct.templateType == 'canvas') {
+        $scope.applicableTips.push('maker');
+      }
+      else if ($scope.templateProduct.templateType == 'design') {
+        $scope.applicableTips.push('photo');
+        $scope.applicableTips.push('color');
+      }
+      else {
+        $scope.applicableTips.push('photo');
+      }
       $scope.lookupOtherOrientation();
       $scope.lookupEdgeOptions();
       updateCssPageSize();
@@ -42,9 +66,9 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     });
   }
 
-  $scope.$on("svgLoaded", function($event, data) {
-    loadSavedTemplate();
-  });
+  // $scope.$on("svgLoaded", function($event, data) {
+  //   loadSavedTemplate();
+  // });
 
   $scope.$on("photoClicked", function($event, data) {
     $scope.togglePhotoSources();
@@ -127,6 +151,10 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     }
   }
 
+  $scope.toggleSizeMenu = function() {
+    $scope.isSizeMenuDisplayed = $scope.isSizeMenuDisplayed ? false : true;
+  }
+
   function switchToOtherOrientation() {
     var tmp = $scope.templateProductId;
     $scope.templateProductId = $scope.otherOrientationId;
@@ -154,12 +182,12 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     printStyleElement.innerHTML += "@media print { #artboard svg { width: " + newPrintSize.width + "in; height: " + newPrintSize.height + "in; } }";
   }
 
-  function loadSavedTemplate() {
-    if (!$scope.savedTemplateId) {
-      return;
-    }
-    project.data = JSON.parse(localStorage.getItem('template_' + $scope.savedTemplateId));
-  }
+  // function loadSavedTemplate() {
+  //   if (!$scope.savedTemplateId) {
+  //     return;
+  //   }
+  //   project.data = JSON.parse(localStorage.getItem('template_' + $scope.savedTemplateId));
+  // }
 
   $scope.saveProject = function() {
     if (!project.canSave) {
@@ -209,7 +237,6 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
       $site.displayNotification("You'll need to add photos to all placeholders in the design and wait for them to finish uploading before you can add this project to your cart.");
       return;
     }
-    ga('send', 'event', 'addToCart', $scope.templateId);
     var cart = {};
     var cartStr = localStorage.getItem('cart');
     if (cartStr) {
@@ -218,6 +245,9 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     if (!cart.items) {
       cart.items = [];
     }
+    
+    console.log(project.svg.outerHTML);
+
     var item = {
       'guid': $util.createGuid(8),
       'templateProductId': $scope.templateProductId,
@@ -233,6 +263,8 @@ function($scope, $http, $routeParams, $location, $site, $util, $rootScope, uploa
     localStorage.setItem('item' + item.guid, JSON.stringify(item));
     cart.items.push(item.guid);
     localStorage.setItem('cart', JSON.stringify(cart));
+
+    ga('send', 'event', 'addToCart', $scope.templateId);
 
     $http.post(API_URL + "/Cart/add_to_cart", {
       'guid': item.guid,

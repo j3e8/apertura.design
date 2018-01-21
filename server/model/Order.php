@@ -105,6 +105,32 @@ class Order {
     return $order;
   }
 
+  public static function get_order_by_external_id($externalOrderId) {
+    $_externalOrderId = db_escape($externalOrderId);
+    $sql = "SELECT o.id, o.userId, o.dateOrdered, o.discountCode, o.discountAmount, o.salesTax, o.shippingAmount
+      FROM orders AS o
+      WHERE o.externalOrderId=$_externalOrderId";
+    $results = db_query($sql);
+    $orderInfo = db_fetch_assoc($results);
+    return $orderInfo;
+  }
+
+  public static function get_order_shipments($orderId) {
+    if (!is_numeric($orderId)) {
+      throw new Exception("Invalid orderId", 400);
+    }
+    $externalOrderItems = [];
+    $sql = "SELECT externalItemId, qty, trackingNumber, dateShipped
+      FROM orderShipments
+      WHERE orderId=$orderId";
+    $result = db_query($sql);
+    $results = db_query($sql);
+    while ($row = db_fetch_assoc($results)) {
+      $externalOrderItems[] = $row;
+    }
+    return $externalOrderItems;
+  }
+
   public static function get_orders_for_user($userId = null) {
     if (!$userId) {
       $userId = User::get_user_id_from_session();
@@ -127,19 +153,39 @@ class Order {
     return $orders;
   }
 
-  /*** PRIVATE ***/
+  public static function get_order_item($orderItemId) {
+    if (!is_numeric($orderItemId)) {
+      throw new Exception("Invalid orderItemId", 400);
+    }
+    $sql = "SELECT oi.orderId, oi.sku, oi.qty, oi.price, oi.status,
+      p.name,
+      otp.filename, otp.guid,
+      pp.externalId
+      FROM orderItems AS oi
+      INNER JOIN products AS p ON oi.sku=p.sku
+      LEFT JOIN orderItemTemplateProducts AS otp ON oi.id=otp.orderItemId
+      LEFT JOIN printProducts AS pp on oi.sku=pp.sku
+      WHERE oi.id=$orderItemId";
+    $results = db_query($sql);
+    $row = db_fetch_assoc($results);
+    return $row;
+  }
 
-  private static function get_order_items($orderId) {
+  public static function get_order_items($orderId) {
     if (!is_numeric($orderId)) {
       throw new Exception("Invalid order id", 400);
     }
     $orderItems = [];
     $sql = "SELECT oi.sku, oi.qty, oi.price, oi.status,
       p.name,
-      tp.filename, tp.guid
+      otp.filename, otp.guid,
+      oii.thumbnailUrl, oii.hiresUrl,
+      pp.externalId
       FROM orderItems AS oi
       INNER JOIN products AS p ON oi.sku=p.sku
-      LEFT JOIN orderItemTemplateProducts AS tp ON oi.id=tp.orderItemId
+      LEFT JOIN orderItemTemplateProducts AS otp ON oi.id=otp.orderItemId
+      LEFT JOIN orderItemImages AS oii ON oi.id=oii.orderItemId
+      LEFT JOIN printProducts AS pp on oi.sku=pp.sku
       WHERE oi.orderId=$orderId";
     $results = db_query($sql);
     while ($row = db_fetch_assoc($results)) {
@@ -147,6 +193,8 @@ class Order {
     }
     return $orderItems;
   }
+
+  /*** PRIVATE ***/
 
   private static function insert_order_items($orderId, $items) {
     foreach($items as $item) {
@@ -198,7 +246,7 @@ class Order {
       throw new Exception("wth", 500);
     }
 
-    $link = 'https://' . SITE_ROOT . '/app/#/order/' . $orderId;
+    $link = 'https://' . SITE_ROOT . '/app/order/' . $orderId;
 
     $name = $user['firstName'] ? $user['firstName'] . ' ' . $user['lastName'] : '';
     $msg = $name ? $name . ",\r\n\r\n" : '';
@@ -208,8 +256,8 @@ class Order {
     $msg .= "We're excited to hear what you think so send us a shout out and tell your friends!\r\n\r\n";
     $msg .= "Apertura";
 
-    mail($user['email'], "Thanks for your order", $msg, "From: 'Apertura Support' <support@apertura.design>\r\n");
-    mail('jake@apertura.photo', "An order was placed", "Order #$orderId\r\n$link", "From: 'Apertura Support' <support@apertura.design>\r\n");
+    mail($user['email'], "Thanks for your order", $msg, "From: 'Apertura Support' <support@apertura.photo>\r\n");
+    mail('support@apertura.photo', "An order was placed", "Order #$orderId\r\n$link", "From: 'Apertura Support' <support@apertura.photo>\r\n");
   }
 
   private static function charge_card($totalAmount, $creditCardId) {

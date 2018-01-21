@@ -135,7 +135,7 @@ class ServerHelper {
   }
 
   private static function send_error($errorMessage) {
-		mail("jake@apertura.design", "Server error", $errorMessage, "From: support@apertura.design\r\n");
+		mail("support@apertura.photo", "Server error", $errorMessage, "From: support@apertura.photo\r\n");
 		return true;
   }
 }

@@ -167,7 +167,7 @@ class User {
     $message = "Thanks for signing up for Apertura.design, we're glad to have you. We're sure you'll love the ";
     $message .= "photo projects you'll be able to create.\r\n\r\n";
     $message .= "If you didn't sign up for this free Apertura.design account, or if you have any questions, please reply to this email.\r\n\r\nApertura Support\r\nsupport@apertura.photo";
-    mail($email, "Welcome to Apertura.design", $message, "From: \"Apertura Support\" <support@apertura.design>\r\n");
+    mail($email, "Welcome to Apertura.design", $message, "From: \"Apertura Support\" <support@apertura.photo>\r\n");
 
     return $userId;
   }

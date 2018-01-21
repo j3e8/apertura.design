@@ -249,6 +249,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           projectPhoto.thumbnailSrc = projectPhoto.src + '/1920';
 
           placeImage(projectPhoto);
+          project.determineSavability();
         }
       }
 

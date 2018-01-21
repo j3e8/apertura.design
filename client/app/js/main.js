@@ -3,7 +3,7 @@ var SITE_ROOT = "";
 var SITE_PATH = SITE_ROOT + "/app";
 var API_URL = SITE_ROOT + "/api";
 
-var CART_THUMBNAIL_PATH = "https://s3.amazonaws.com/orders.apertura.design/svg";
+var CART_SVG_PATH = "https://s3.amazonaws.com/orders.apertura.design/svg";
 
 Stripe.setPublishableKey('pk_live_7PXiaL4diCcRWwqmizuNGSwM');
 

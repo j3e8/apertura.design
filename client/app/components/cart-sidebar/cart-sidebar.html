@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <div class="cart-item" ng-repeat="item in cart.items">
+  <div class="cart-item" ng-repeat="item in cart.items track by item.guid">
     <div class="row row--spaced row--vertical-center">
       <div class="row__cell">
         {{ item.name }}

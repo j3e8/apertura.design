@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <div class="cart-item" ng-repeat="item in cart.items">
+    <div class="cart-item" ng-repeat="item in cart.items track by item.guid">
       <div class="row row--spaced row--vertical-center">
         <div class="row__cell img-cell">
           <svg-thumbnail guid="item.guid"></svg-thumbnail>
@@ -49,7 +49,8 @@
           </div>
         </div>
         <div class="row__cell price-cell">
-          {{ cart.shipping | currency:'$' }}
+          <span ng-show="cart.shipping == 0">FREE</span>
+          <span ng-show="cart.shipping > 0">{{ cart.shipping | currency:'$' }}</span>
           <wait-indicator ng-show="shippingIsLoading"></wait-indicator>
         </div>
       </div>

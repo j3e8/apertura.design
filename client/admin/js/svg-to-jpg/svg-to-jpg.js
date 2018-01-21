@@ -213,11 +213,25 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
     var _start = new Date().getTime();
     console.log('saveToJpg start');
     var canvas = document.createElement("canvas");
-    canvas.width = size.width;
-    canvas.height = size.height;
+    if (size.height > size.width) {
+      canvas.width = size.height;
+      canvas.height = size.width;
+    }
+    else {
+      canvas.width = size.width;
+      canvas.height = size.height;
+    }
 
     var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    if (size.height > size.width) {
+      ctx.save();
+      ctx.rotate(Math.PI/2);
+      ctx.drawImage(img, 0, -canvas.width, canvas.height, canvas.width);
+      ctx.restore();
+    }
+    else {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }
 
     var dataURL = canvas.toDataURL("image/jpeg", 1.0);
 
@@ -295,7 +309,8 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
       }).then(function(response) {
         var broadcast = {
           'message': 'done',
-          'guid': guid
+          'guid': guid,
+          'images': response.data.results
         };
         $rootScope.$broadcast("processingImage", JSON.stringify(broadcast));
       }, function(error) {

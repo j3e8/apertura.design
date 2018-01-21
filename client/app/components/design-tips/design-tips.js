@@ -1,27 +1,24 @@
 app.directive("designTips", function($timeout) {
   return {
     restrict: 'E',
-    scope: {},
+    scope: {
+      tips: '='
+    },
     templateUrl: '/app/components/design-tips/design-tips.html',
     link: function($scope, $element, $attrs) {
-      $scope.tips = [
-        {
-          id: 'photo',
-          heading: "Add photos",
-          message: "Drop your own photos into this design by tapping on a gray box with the photo icon."
-        },
-        {
-          id: 'color',
-          heading: "Customize colors",
-          message: "You can change the color of some design elements. Tap on different text and graphics to see what can be customized."
-        }
-      ];
+      $scope.tips = [];
       $scope.tipIsDisplayed = undefined;
       $scope.currentTip = null;
 
+      $scope.$watch("applicableTips", function(newValue, oldValue) {
+        if (!$scope.currentTip) {
+          $timeout(showNextTip, 750);
+        }
+      });
+
       function showNextTip() {
         for (var i=0; i < $scope.tips.length; i++) {
-          var hasBeenSeen = localStorage.getItem('tip-' + $scope.tips[i].id) == 'yes';
+          var hasBeenSeen = localStorage.getItem('tip-' + $scope.tips[i]) == 'yes';
           if (!hasBeenSeen) {
             $timeout(function() {
               $scope.tipIsDisplayed = true;
@@ -31,12 +28,12 @@ app.directive("designTips", function($timeout) {
           }
         }
       }
-      showNextTip();
 
       $scope.hideTip = function() {
+        ga('send', 'tip', $scope.currentTip);
         $scope.tipIsDisplayed = false;
         if ($scope.currentTip) {
-          localStorage.setItem('tip-' + $scope.currentTip.id, 'yes');
+          localStorage.setItem('tip-' + $scope.currentTip, 'yes');
           showNextTip();
         }
       }

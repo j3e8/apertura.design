@@ -14,6 +14,7 @@ RewriteRule ^(admin/)?([0-9]+)/([0-9]+)/([0-9]+)\.[a-z0-9]+(/([0-9]+))?$ server/
 RewriteRule ^$ /app/ [L,R=301]
 
 # rules for app
+RewriteRule ^app$ client/app/index.html [END]
 RewriteRule ^app/$ client/app/index.html [END]
 RewriteRule ^app/bundle.js$ client/app/bundle.js [END]
 RewriteRule ^app/bundle.css$ client/app/bundle.css [END]
@@ -29,6 +30,7 @@ RewriteRule ^admin/bundle.css$ client/admin/bundle.css [END]
 RewriteRule ^admin/pages/(.+)/(.+)\.html$ client/admin/pages/$1/$2.html [END]
 RewriteRule ^admin/assets/(.+)$ client/app/assets/$1 [END]
 RewriteRule ^admin/components/(.+)$ client/admin/components/$1 [END]
+RewriteRule ^admin/(.+)$ client/admin/index.html [END]
 
 # rules for artist
 RewriteRule ^artist/$ client/artist/index.html [END]

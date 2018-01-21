@@ -4,7 +4,7 @@ app.directive("svgThumbnail", ["$http", function($http) {
     scope: {
       guid: '='
     },
-    templateUrl: '/app/components/svg-thumbnail/svg-thumbnail.html',
+    templateUrl: 'components/svg-thumbnail/svg-thumbnail.html',
     link: function($scope, $element, $attrs) {
       $scope.svg = null;
 
@@ -13,7 +13,7 @@ app.directive("svgThumbnail", ["$http", function($http) {
           return;
         }
 
-        var url = CART_THUMBNAIL_PATH + '/' + $scope.guid + '.svg';
+        var url = CART_SVG_PATH + '/' + $scope.guid + '.svg';
 
         var xhr = new XMLHttpRequest;
         xhr.open('GET', url, true);

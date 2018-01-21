@@ -1,1 +1,21 @@
 [17-Jan-2017 09:58:51 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/madisonavenueinc/apertura.design/server/model/Cart.php on line 64
+[29-Jan-2017 11:33:43 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 22790960 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 22:58:20 UTC] PHP Parse error:  syntax error, unexpected '{' in /home/madisonavenueinc/apertura.design/server/model/Processing.php on line 203
+[10-Feb-2017 22:58:22 UTC] PHP Parse error:  syntax error, unexpected '{' in /home/madisonavenueinc/apertura.design/server/model/Processing.php on line 203
+[10-Feb-2017 23:00:34 UTC] PHP Parse error:  syntax error, unexpected '{' in /home/madisonavenueinc/apertura.design/server/model/Processing.php on line 203
+[10-Feb-2017 17:01:52 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 74065152 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 17:05:22 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 78665560 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 17:08:14 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 70377540 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 23:08:27 UTC] PHP Warning:  include(lib/HttpRequest.php): failed to open stream: No such file or directory in /home/madisonavenueinc/apertura.design/server/global_vars.php on line 41
+[10-Feb-2017 23:08:27 UTC] PHP Warning:  include(): Failed opening 'lib/HttpRequest.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/madisonavenueinc/apertura.design/server/global_vars.php on line 41
+[10-Feb-2017 23:08:27 UTC] PHP Fatal error:  Class 'HttpRequest' not found in /home/madisonavenueinc/apertura.design/server/model/Processing.php on line 149
+[10-Feb-2017 17:12:48 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 70377540 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 17:16:52 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 70377540 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 17:26:14 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 70377540 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 18:17:20 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 70474752 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 18:27:52 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 70474752 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[10-Feb-2017 18:39:27 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 70474752 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[16-Feb-2017 02:39:29 UTC] PHP Parse error:  syntax error, unexpected '}' in /home/madisonavenueinc/apertura.design/server/model/Processing.php on line 196
+[16-Feb-2017 02:39:36 UTC] PHP Parse error:  syntax error, unexpected '}' in /home/madisonavenueinc/apertura.design/server/model/Processing.php on line 196
+[01-Mar-2017 21:43:43 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 103314992 bytes exceeds the limit of 20971520 bytes in Unknown on line 0
+[02-Mar-2017 09:23:49 America/Chicago] PHP Warning:  Unknown: POST Content-Length of 51675420 bytes exceeds the limit of 20971520 bytes in Unknown on line 0

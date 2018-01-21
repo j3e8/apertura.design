@@ -1,14 +1,30 @@
 <div class="content create-page">
   <div class="template-info" ng-hide="isLoadingTemplate">
-    <h1>{{ templateProduct.productName }}</h1>
-    <div class="template-name" ng-show="templateProduct.templateType=='design'">Template: {{ templateProduct.templateName }}</div>
+    <div ng-show="templateProduct.templateType=='canvas'">
+      <h1 ng-click="toggleSizeMenu()">
+        <div class="row row--spaced">
+          <div class="row__cell clickable">
+            {{ templateProduct.productName }}
+            <span class="icon icon-down-caret"></span>
+          </div>
+          <div class="row__cell row__cell--fixed text-right">
+            {{ templateProduct.price | currency:'$' }}
+            <div class="fine-print">Free shipping</div>
+          </div>
+        </div>
+      </h1>
+    </div>
+    <div ng-show="templateProduct.templateType=='design'">
+      <h1>{{ templateProduct.productName }}</h1>
+      <div class="template-name">Template: {{ templateProduct.templateName }}</div>
+    </div>
   </div>
 
   <section ng-show="isLoadingTemplate" class="text-center breathe">
     <wait-indicator></wait-indicator>
   </section>
 
-  <section class="breathe" ng-hide="isLoadingTemplate">
+  <section class="breathe" ng-hide="isLoadingTemplate" id="instructions-section">
     <div class="row row--spaced row--vertical-bottom" id="instructions-top">
       <div class="row__cell row__cell--fixed relative" ng-show="otherEdgeTemplateProductId">
         <img ng-click="switchToImageWrap()" src="/app/assets/images/image-wrap.svg">
@@ -36,7 +52,7 @@
     <canvas-designer template-product="templateProduct"></canvas-designer>
   </section>
 
-  <design-tips></design-tips>
+  <design-tips tips="applicableTips"></design-tips>
 
   <div class="buttons text-center" ng-hide="isLoadingTemplate">
     <button ng-click="saveProject()" ng-class="{'disabled': !project.canSave}" style="display: none;">Save</button>
@@ -69,5 +85,35 @@
   </div>
 
   <apertura-photo-picker is-displayed="aperturaPhotoPickerIsDisplayed" handle-photo-click="choosePhoto" on-cancel="toggleAperturaPhotoPicker" on-change-photo-source="switchPhotoSource"></apertura-photo-picker>
+
+  <div class="shadow" ng-click="toggleSizeMenu()" ng-show="isSizeMenuDisplayed"></div>
+  <div class="size-menu" ng-show="isSizeMenuDisplayed" ng-class="{'open': isSizeMenuDisplayed, 'close': isSizeMenuDisplayed === false}">
+    <div class="column">
+      <div class="column__cell column__cell--fixed size-menu-header">
+        <div class="row row--vertical-center">
+          <div class="row__cell">
+            <h2>Choose a canvas size</h2>
+          </div>
+          <div class="row__cell row__cell--fixed">
+            <span class="icon icon-close" ng-click="toggleSizeMenu()"></span>
+          </div>
+        </div>
+      </div>
+      <div class="column__cell size-menu-options">
+        <div class="product" ng-repeat="t in otherSizes">
+          <a ng-href="/app/create/{{ t.templateProductId }}">
+            <div class="row row--spaced">
+              <div class="row__cell">
+                {{ t.productName }}
+              </div>
+              <div class="row__cell row__cell--fixed price">
+                {{ t.price | currency:'$' }}
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>

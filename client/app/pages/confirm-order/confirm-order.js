@@ -69,17 +69,25 @@ function($scope, $http, $routeParams, $location, $site, $shoppingCart, $timeout)
       $shoppingCart.emptyCart();
       var orderId = response.data.results;
 
-      ga('send', 'event', {
-        'eventCategory': 'order',
-        'eventAction': 'complete',
-        'eventLabel': '',
-        'eventValue': $scope.cart.total,
+      ga('send', 'event', 'order', 'complete', '', Math.round($scope.cart.total), {
         'hitCallback': function() {
           $scope.isPlacingOrder = false;
           $location.path('/app/thank-you/' + orderId);
           $scope.$apply();
         }
       });
+
+      // ga('send', 'event', {
+      //   'eventCategory': 'order',
+      //   'eventAction': 'complete',
+      //   'eventLabel': '',
+      //   'eventValue': $scope.cart.total,
+      //   'hitCallback': function() {
+      //     $scope.isPlacingOrder = false;
+      //     $location.path('/app/thank-you/' + orderId);
+      //     $scope.$apply();
+      //   }
+      // });
     }, function(error) {
       $scope.isPlacingOrder = false;
       console.error(error);

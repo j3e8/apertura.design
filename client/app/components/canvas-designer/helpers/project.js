@@ -1,11 +1,13 @@
 app.factory("project", function() {
 
-  var project = {
-    canSave: false,
-    data: {},
-    status: null,
-    svg: null
-  };
+  var project = {};
+
+  function startNewProject() {
+    project.canSave = false;
+    project.data = {};
+    project.status = null;
+    project.svg = null;
+  }
 
   function determineSavability() {
     console.log('isSavable');
@@ -53,6 +55,6 @@ app.factory("project", function() {
   }
 
   project.determineSavability = determineSavability;
-
+  project.startNewProject = startNewProject;
   return project;
 });

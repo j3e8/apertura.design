@@ -1,7 +1,7 @@
 <?php
 
 	try {
-		$mysqli = new mysqli("localhost", "jpix", "a!asDf#sj9vW", "jpix");
+		$mysqli = new mysqli("flooreight.cycj5r5gccpv.us-west-2.rds.amazonaws.com", "jpix", "a!asDf#sj9vW", "jpix");
 	} catch (Exception $ex) {
 		echo $ex->getMessage();
 		exit();

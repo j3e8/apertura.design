@@ -1,9 +1,9 @@
 <?php
   require_once('lib/db.inc');
 
-  define('SITE_PATH', '/home/madisonavenueinc/apertura.design');
-  define('TEMPLATE_PATH', '/home/madisonavenueinc/apertura.design/client/app/assets/templates/svg');
-  define('THUMBNAIL_PATH', '/home/madisonavenueinc/apertura.design/client/app/assets/templates/thumbnail');
+  define('SITE_PATH', '/var/www/html/apertura.design');
+  define('TEMPLATE_PATH', '/var/www/html/apertura.design/client/app/assets/templates/svg');
+  define('THUMBNAIL_PATH', '/var/www/html/apertura.design/client/app/assets/templates/thumbnail');
 
   define('DOMAIN', 'apertura.design');
   define('SITE_ROOT', 'apertura.design');
@@ -23,6 +23,10 @@
 
   define('GOOTEN_API_URL', 'https://api.print.io/api/v/3');
   define('GOOTEN_RECIPE_ID', '9f6c711c-0e4c-4985-bf4b-758dfb3a857d');
+  define('GOOTEN_PARTNER_BILLING_KEY', 'VaUgnpROQF4vGTTXvO8OQoECKVgY5QupDWwnWG1O2Qg=');
+
+  define('APERTURA_SUPPORT_EMAIL', 'support@apertura.photo');
+  define('APERTURA_SUPPORT_PHONE', '385-209-3182');
 
   function __autoload($class_name) {
     if (file_exists("model/$class_name.php")) {

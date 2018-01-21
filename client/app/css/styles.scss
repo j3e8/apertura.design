@@ -73,13 +73,16 @@ div.container {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
+  @media (max-width: 480px) {
+    padding: 40px 0 0 0;
+  }
 }
 @media screen and (max-width: 640px) {
   div.container {
     width: 100%;
   }
   div.content {
-    padding: 15px;
+    padding: 10px 15px;
   }
 }
 

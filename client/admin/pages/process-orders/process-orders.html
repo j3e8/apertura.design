@@ -10,10 +10,33 @@
 
   <hr>
 
-  <div class="text-center breathe" ng-show="orderItemId">
-    <button ng-click="processOrder()" ng-hide="isProcessing">Process</button>
-    <div ng-show="isProcessing">
-      {{ processingStatus }}
+  <div class="breathe" ng-show="orderItemId">
+    <div class="row row--spaced">
+      <div class="row__cell">
+        <h3>Order #{{ orderId }}</h3>
+        <div>{{ filename }}</div>
+        <div class="breathe">
+          <div>{{ templateProduct.sku }}</div>
+          <div>{{ templateProduct.filename }}</div>
+          <div>{{ templateProduct.externalId }}</div>
+        </div>
+        <div class="breathe">
+          <label>Shipping</label>
+          <div>${{ order.shippingAmount }}</div>
+          <div>{{ order.shipAddress.firstName }} {{ order.shipAddress.lastName }}</div>
+          <div>{{ order.shipAddress.address }}</div>
+          <div ng-show="order.shipAddress.address2">{{ order.shipAddress.address2 }}</div>
+          <div>{{ order.shipAddress.city }}, {{ order.shipAddress.state }} {{ order.shipAddress.postalCode }}</div>
+        </div>
+      </div>
+      <div class="row__cell text-right">
+        <button ng-click="processOrder()" ng-hide="isProcessing || isProcessed">Process</button>
+        <div ng-show="isProcessing">
+          {{ processingStatus }}
+          <wait-indicator></wait-indicator>
+        </div>
+        <div>{{ hiresUrl }}</div>
+      </div>
     </div>
   </div>
 

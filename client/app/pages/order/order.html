@@ -46,7 +46,7 @@
         <div class="row row--spaced row--vertical-center">
           <div class="row__cell img-cell">
             <div class="img">
-              <img ng-src="{{ getSvgSrc(item) }}">
+              <img ng-src="{{ item.thumbnailUrl }}">
             </div>
           </div>
           <div class="row__cell">
@@ -83,7 +83,7 @@
           </div>
           <div class="row__cell price-cell">
             <span class="discount-amount">
-              {{ order.discountAmount | currency:'$' }}
+              {{ -order.discountAmount | currency:'$' }}
             </span>
           </div>
         </div>

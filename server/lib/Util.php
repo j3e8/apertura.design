@@ -9,4 +9,8 @@
       }
       return $str;
     }
+
+    public static function country_code_to_two_digit_code($countryCode) {
+      return 'US';
+    }
   }

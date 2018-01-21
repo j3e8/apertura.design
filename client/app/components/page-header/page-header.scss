@@ -11,7 +11,7 @@ page-header {
     z-index: 2;
 
     @media screen and (max-width: 480px) {
-      padding-top: 20px;
+      /* padding-top: 20px; */
     }
 
     img {
@@ -29,7 +29,7 @@ page-header {
     font-size: 36px;
 
     @media screen and (max-width: 480px) {
-      top: 25px;
+      top: 7px;
     }
 
     .hamburger {

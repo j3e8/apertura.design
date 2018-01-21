@@ -20,8 +20,4 @@ function($scope, $http, $routeParams) {
     $scope.isLoading = false;
     console.error(error);
   });
-
-  $scope.getSvgSrc = function(item) {
-    return CART_THUMBNAIL_PATH + '/' + item.filename;
-  }
 }]);

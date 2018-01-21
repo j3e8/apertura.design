@@ -1,6 +1,11 @@
 app.service("ShoppingCart", ["$http", "Site", "$rootScope", function($http, $site, $rootScope) {
   var ShoppingCart = {};
 
+  var allShippingOptions = [
+    { shippingMethod: 'standard', description: 'Free shipping - 12 days', cost: 0, costPerAdditional: 0, timeframe: 12 },
+    { shippingMethod: 'priority', description: 'Priority - 4 days', cost: 8.95, costPerAdditional: 7.00, timeframe: 4 }
+  ];
+
   var cart = {
     items: [],
     discountCode: null,
@@ -11,6 +16,8 @@ app.service("ShoppingCart", ["$http", "Site", "$rootScope", function($http, $sit
     shipZip: undefined,
     shipCountry: 'US',
     shipAddressId: undefined,
+    shippingMethod: 'standard',
+    shippingOptions: allShippingOptions,
     paymentInfoId: undefined
   };
 
@@ -38,12 +45,10 @@ app.service("ShoppingCart", ["$http", "Site", "$rootScope", function($http, $sit
       cart.billingId = localCart.billingId;
 
       ShoppingCart.applyDiscountCode(localCart.discountCode, function() {
-        ShoppingCart.loadShippingQuote(cart.shipZip, function() {
-          calculateCart();
-          if (callback) {
-            callback(cart);
-          }
-        });
+        calculateCart();
+        if (callback) {
+          callback(cart);
+        }
       });
     }
   }
@@ -97,58 +102,21 @@ app.service("ShoppingCart", ["$http", "Site", "$rootScope", function($http, $sit
     }
   }
 
-  ShoppingCart.loadShippingQuote = function(shipZip, callback) {
-    if (shipZip) {
-      updateCartShipZip(shipZip);
-    }
-
-    if (freeShipping || !cart.shipZip) {
-      calculateCart();
-      if (callback) {
-        callback(cart);
-      }
-      return;
-    }
-    var externalItems = [];
-    cart.items.forEach(function(item) {
-      var extItem = externalItems.find(function(i) {
-        return i.sku == item.sku;
+  ShoppingCart.loadShippingQuote = function(shippingMethod, callback) {
+    ShoppingCart.loadCart(function(cart) {
+      var s = allShippingOptions.find(function(opt) {
+        return opt.shippingMethod == shippingMethod;
       });
-      if (extItem) {
-        extItem.qty += 1;
+      if (!s) {
+        s = getStandardShipping();
       }
-      else {
-        externalItems.push({
-          'sku': item.externalId,
-          'qty': item.qty
-        });
-      }
-    });
+      var totalItems = cart.items.reduce(function(runningTotal, current) {
+        return Number(runningTotal) + current.qty;
+      }, 0);
+      cart.shipping = s.cost + (s.costPerAdditional * (totalItems - 1));
 
-    $http.post(API_URL + "/Cart/get_shipping_quote", {
-      address: {
-        postalCode: cart.shipZip,
-        country: cart.shipCountry
-      },
-      items: externalItems
-    }).then(function(response) {
-      cart.timeframe = response.data.results.timeframe;
-      if (!freeShipping) {
-        // cart.shipping = response.data.results.shipping;
-        calculateCart();
-        if (cart.subtotal >= 25) {
-          cart.shipping = 0;
-        }
-        else {
-          cart.shipping = 1.99;
-        }
-      }
       calculateCart();
-      if (callback) {
-        callback(cart);
-      }
-    }, function(error) {
-      console.error(error);
+
       if (callback) {
         callback(cart);
       }
@@ -182,7 +150,6 @@ app.service("ShoppingCart", ["$http", "Site", "$rootScope", function($http, $sit
     if (item) {
       item.qty = qty;
       localStorage.setItem('item' + item.guid, JSON.stringify(item));
-      ShoppingCart.loadShippingQuote(null, callback);
     }
   }
 
@@ -280,6 +247,13 @@ app.service("ShoppingCart", ["$http", "Site", "$rootScope", function($http, $sit
       });
       localStorage.removeItem('cart');
     }
+  }
+
+  function getStandardShipping() {
+    var s = allShippingOptions.find(function(opt) {
+      return opt.shippingMethod == 'standard';
+    });
+    return s;
   }
 
   return ShoppingCart;

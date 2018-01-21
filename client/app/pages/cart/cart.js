@@ -1,6 +1,5 @@
 app.controller("cartController", ["$scope", "$http", "$routeParams", "$location", "$rootScope", "$sce", "Site", "ShoppingCart", "$timeout",
 function($scope, $http, $routeParams, $location, $rootScope, $sce, $site, $shoppingCart, $timeout) {
-
   $scope.cartIsLoading = true;
   $scope.cart = {};
   $scope.shippingIsLoading = false;
@@ -57,11 +56,15 @@ function($scope, $http, $routeParams, $location, $rootScope, $sce, $site, $shopp
 
   $scope.loadShippingQuote = function() {
     $scope.shippingIsLoading = true;
-    ga('send', 'event', 'shippingQuote', $scope.cart.shipZip);
-    $shoppingCart.loadShippingQuote($scope.cart.shipZip, function(cart) {
+    $shoppingCart.loadShippingQuote($scope.cart.shippingMethod, function(cart) {
       $scope.shippingIsLoading = false;
       $scope.cart = cart;
     });
+  }
+
+  $scope.updateShippingMethod = function() {
+    ga('send', 'event', 'shippingQuote', $scope.cart.shippingMethod);
+    $scope.loadShippingQuote();
   }
 
   $scope.toggleRemoveItemConfirmation = function(item) {
@@ -92,5 +95,6 @@ function($scope, $http, $routeParams, $location, $rootScope, $sce, $site, $shopp
   $shoppingCart.loadCart(function(cart) {
     $scope.cartIsLoading = false;
     $scope.cart = cart;
+    $scope.loadShippingQuote();
   });
 }]);

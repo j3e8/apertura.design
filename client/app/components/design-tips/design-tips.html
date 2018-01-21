@@ -1,9 +1,39 @@
-<div class="design-tip" ng-show="tipIsDisplayed" ng-class="{'open': tipIsDisplayed, 'closed': tipIsDisplayed === false}">
-  <h2>{{ currentTip.heading }}</h2>
-  <div>
-    {{ currentTip.message }}
+<div class="shadow" ng-show="tipIsDisplayed"></div>
+<div class="design-tip" ng-show="tipIsDisplayed" ng-class="{'open': tipIsDisplayed, 'closed': tipIsDisplayed === false}" ng-click="hideTip()">
+
+  <div ng-show="currentTip == 'maker'">
+    <div class="content">
+      <h2>Start your canvas</h2>
+    </div>
+    <div>
+      <img class="full-width" src="/app/assets/images/create/canvas-example.jpg">
+    </div>
+    <div class="content">
+      <div class="row row--spaced">
+        <div class="row__cell">
+          <b>Tip:</b> Upload your own photos by tapping on the photo icon in the app.
+        </div>
+        <div class="row__cell row__cell--fixed">
+          <img class="placeholder" src="/app/assets/images/photo-placeholder.svg">
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="text-right">
-    <button ng-click="hideTip()">Okay</button>
+
+  <div class="content" ng-show="currentTip == 'photo'">
+    <h2>Add photos</h2>
+    <div>Use your own photos in this template by tapping on the gray box with this photo icon.</div>
+    <div class="breathe text-center">
+      <img class="placeholder" src="/app/assets/images/photo-placeholder.svg">
+    </div>
+  </div>
+
+  <div class="content" ng-show="currentTip == 'color'">
+    <h2>Customize colors</h2>
+    <div>You can change the color of some design elements. Tap on different text and graphics to see what can be customized.</div>
+  </div>
+
+  <div class="content text-right">
+    <button ng-click="hideTip()">Got it</button>
   </div>
 </div>
