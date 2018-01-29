@@ -30,6 +30,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
 
       $scope.$watch("project.data", function() {
         if (project.data) {
+          console.log("canvas-designer.js", 'project.data', project.data);
           if (!project.data.photos) {
             project.data.photos = {};
           }
@@ -50,6 +51,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
       });
 
       $scope.$watch("templateProduct", function() {
+        console.log("canvas-designer.js", 'templateProduct', $scope.templateProduct);
         if ($scope.templateProduct && $scope.templateProduct.filename) {
           loadSvg(function() {
             applyProjectData();
@@ -178,6 +180,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
 
         EXIF.getData(imgFile, function() {
           var orientation = EXIF.getTag(imgFile, 'Orientation');
+          console.log("orientation", orientation);
           switch (orientation) {
             case 3:
               projectPhoto.rotation = 180;
@@ -256,7 +259,14 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
        * element, (src|base64)
       ***/
       function placeImage(projectPhoto) {
+        console.log('placeImage');
         var thumbnailSrc = getImageSrc(projectPhoto);
+        if (thumbnailSrc) {
+          console.log('thumbnailSrc', thumbnailSrc.substring(0, 20));
+        }
+        else {
+          console.log('no thumbnailSrc');
+        }
         if (!thumbnailSrc) {
           return;
         }
@@ -266,21 +276,27 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
           project.svg.insertBefore(defs, project.svg.firstChild);
         }
+        console.log('defs', defs);
 
         var clippath = getOrCreateClipPath(projectPhoto, defs);
+        console.log('clippath', clippath);
         projectPhoto.clippathId = clippath.id;
         projectPhoto.shapeBounds = Svg.calculateSvgElementBounds(projectPhoto.element);
+        console.log('projectPhoto.shapeBounds', projectPhoto.shapeBounds);
 
         var elementRect = projectPhoto.element.getBoundingClientRect();
+        console.log('elementRect', elementRect);
         $scope.imageWaitIndicatorIsDisplayed = true;
         $scope.imageWaitIndicatorPosition = {
           left: (elementRect.left + elementRect.width / 2 + document.body.scrollLeft) + "px",
           top: (elementRect.top + elementRect.height / 2 + document.body.scrollTop) + "px"
         };
 
+        console.log('create image object');
         var image = new Image();
         image.onload = handlePlacedImageLoad.bind(image, projectPhoto);
         image.src = thumbnailSrc;
+        console.log('END of placeImage');
       }
 
       function colorize(colorString) {
@@ -313,6 +329,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
       }
 
       function handlePlacedImageLoad(projectPhoto) {
+        console.log('handlePlacedImageLoad', projectPhoto);
         projectPhoto.image = getOrCreateSvgImage(projectPhoto);
 
         calculateImageBoundsForPhoto(projectPhoto, this);
@@ -333,6 +350,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         // remove previous styling so the photo can be seen
         applyFillToElement(projectPhoto.element, 'transparent');
         applyStrokeToElement(projectPhoto.element, 'transparent');
+        console.log('final element', projectPhoto.element);
 
         $scope.imageWaitIndicatorIsDisplayed = false;
         $scope.$apply();
@@ -361,6 +379,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
       }
 
       function calculateImageBoundsForPhoto(projectPhoto, img) {
+        console.log('calculateImageBoundsForPhoto');
         var imgWidth = img.width;
         var imgHeight = img.height;
 
@@ -389,6 +408,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           width:  Number(newImgSize.width),
           height:  Number(newImgSize.height)
         }
+        console.log('projectPhoto.imageBounds', projectPhoto.imageBounds);
       }
 
       function getOrCreateClipPath(projectPhoto, defs) {
@@ -438,6 +458,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         }
         svgimage.setAttribute('x', '-100in');
         svgimage.setAttribute('y', '-100in');
+        console.log('getOrCreateSvgImage', svgimage);
         return svgimage;
       }
 
@@ -714,35 +735,18 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
           x: Number(imageBounds.left) + move.x,
           y: Number(imageBounds.top) + move.y
         };
-
-	if (projectPhoto.rotation == 270 || projectPhoto.rotation == 90) {
-		if (newLocation.x > shapeBounds.left) {
-		  newLocation.x = shapeBounds.left;
-		}
-		if (newLocation.x < shapeBounds.left - (imageBounds.height - shapeBounds.height)) {
-		  newLocation.x = shapeBounds.left - (imageBounds.height - shapeBounds.height);
-		}
-		if (newLocation.y > shapeBounds.top) {
-		  newLocation.y = shapeBounds.top;
-		}
-		if (newLocation.y < shapeBounds.top - (imageBounds.width - shapeBounds.width)) {
-		  newLocation.y = shapeBounds.top - (imageBounds.width - shapeBounds.width);
-		}
-	}
-	else {
-		if (newLocation.x > shapeBounds.left) {
-		  newLocation.x = shapeBounds.left;
-		}
-		if (newLocation.x < shapeBounds.left - (imageBounds.width - shapeBounds.width)) {
-		  newLocation.x = shapeBounds.left - (imageBounds.width - shapeBounds.width);
-		}
-		if (newLocation.y > shapeBounds.top) {
-		  newLocation.y = shapeBounds.top;
-		}
-		if (newLocation.y < shapeBounds.top - (imageBounds.height - shapeBounds.height)) {
-		  newLocation.y = shapeBounds.top - (imageBounds.height - shapeBounds.height);
-		}
-	}
+        if (newLocation.x > shapeBounds.left) {
+          newLocation.x = shapeBounds.left;
+        }
+        if (newLocation.x < shapeBounds.left - (imageBounds.width - shapeBounds.width)) {
+          newLocation.x = shapeBounds.left - (imageBounds.width - shapeBounds.width);
+        }
+        if (newLocation.y > shapeBounds.top) {
+          newLocation.y = shapeBounds.top;
+        }
+        if (newLocation.y < shapeBounds.top - (imageBounds.height - shapeBounds.height)) {
+          newLocation.y = shapeBounds.top - (imageBounds.height - shapeBounds.height);
+        }
 
         return newLocation;
       }
