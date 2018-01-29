@@ -345,7 +345,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         }
 
         // handle possible EXIF rotation
-        applyPhotoRotation(projectPhoto);
+        applyPhotoExifRotation(projectPhoto);
 
         // remove previous styling so the photo can be seen
         applyFillToElement(projectPhoto.element, 'transparent');
@@ -356,39 +356,25 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         $scope.$apply();
       }
 
-      function applyPhotoRotation(projectPhoto) {
-        console.log('applyPhotoRotation', projectPhoto.rotation);
-        if (projectPhoto.rotation == 180) {
+      function applyPhotoExifRotation(projectPhoto) {
+        console.log('applyPhotoExifRotation', projectPhoto.rotation);
+
+        if (projectPhoto.element.getAttribute('transform')) {
+          var g1 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          g1.setAttribute('transform', projectPhoto.element.getAttribute('transform'));
+          projectPhoto.image.parentNode.insertBefore(g1, projectPhoto.image);
+          projectPhoto.image.parentNode.removeChild(projectPhoto.image);
+          g1.appendChild(projectPhoto.image);
+        }
+
+        if (projectPhoto.rotation) {
           var cx = Number(projectPhoto.imageBounds.left) + projectPhoto.imageBounds.width / 2;
           var cy = Number(projectPhoto.imageBounds.top) + projectPhoto.imageBounds.height / 2;
           var rotate = "rotate(" + projectPhoto.rotation + ", " + cx + ", " + cy + ")";
           projectPhoto.image.setAttribute('transform', rotate);
         }
-        else if (projectPhoto.rotation == 90) {
-          projectPhoto.image.setAttribute('x', 0);
-          projectPhoto.image.setAttribute('y', 0);
-          var w = parseFloat(projectPhoto.image.getAttribute('width'));
-          var h = parseFloat(projectPhoto.image.getAttribute('height'));
-          projectPhoto.image.setAttribute('width', h);
-          projectPhoto.image.setAttribute('height', w);
-          var x = Number(w) + (projectPhoto.shapeBounds.width - w) / 2;
-          var y = (projectPhoto.shapeBounds.height - h) / 2;
-          var translate = "translate(" + x + "," + y + ")";
-          var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
-          projectPhoto.image.setAttribute('transform', translate + ' ' + rotate);
-        }
-        else if (projectPhoto.rotation == 270) {
-          projectPhoto.image.setAttribute('x', 0);
-          projectPhoto.image.setAttribute('y', 0);
-          var w = parseFloat(projectPhoto.image.getAttribute('width'));
-          var h = parseFloat(projectPhoto.image.getAttribute('height'));
-          projectPhoto.image.setAttribute('width', h);
-          projectPhoto.image.setAttribute('height', w);
-          var x = projectPhoto.shapeBounds.left - projectPhoto.shapeBounds.top;
-          var y = projectPhoto.shapeBounds.width + projectPhoto.shapeBounds.left + projectPhoto.shapeBounds.top;
-          var translate = "translate(" + x + "," + y + ")";
-          var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
-          projectPhoto.image.setAttribute('transform', translate + ' ' + rotate);
+        else {
+          projectPhoto.image.removeAttribute('transform');
         }
       }
 
@@ -396,10 +382,6 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
         console.log('calculateImageBoundsForPhoto');
         var imgWidth = img.width;
         var imgHeight = img.height;
-        if (projectPhoto.rotation == 90 || projectPhoto.rotation == 270) {
-          imgWidth = img.height;
-          imgHeight = img.width;
-        }
 
         var imgRatio = imgWidth / imgHeight;
         var elementRatio = projectPhoto.shapeBounds.width / projectPhoto.shapeBounds.height;
@@ -417,11 +399,6 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
 
         var imageX = Number(projectPhoto.shapeBounds.left) + (projectPhoto.shapeBounds.width - newImgSize.width) / 2;
         var imageY = Number(projectPhoto.shapeBounds.top) + (projectPhoto.shapeBounds.height - newImgSize.height) / 2;
-
-        if (projectPhoto.rotation == 90 || projectPhoto.rotation == 270) {
-          imageX = 0;
-          imageY = 0;
-        }
 
         projectPhoto.imageBounds = {
           left: Number(imageX),
@@ -741,6 +718,7 @@ app.directive("canvasDesigner", ["$http", "project", function($http, project) {
 
         if (projectPhoto.rotation == 180) {
           move.x = -move.x;
+          move.y = -move.y;
         }
         else if (projectPhoto.rotation == 90) {
           var y = move.y;
