@@ -33,8 +33,6 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
             var url = projectPhoto.src;
             var thumbnailSrc = projectPhoto.thumbnailSrc;
 
-            console.log('loadHiResPhoto', thumbnailSrc);
-
             loadHiResPhoto(url, thumbnailSrc, function(base64img) {
               projectPhoto.image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', base64img);
 
@@ -125,6 +123,7 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
   }
 
   function loadHiResPhoto(url, thumbnailSrc, callback) {
+    console.log('loadHiResPhoto', url);
     var http = new XMLHttpRequest();
     http.open("GET", url + "?t=" + (new Date().getTime()), true);
     http.crossOrigin = "anonymous";
