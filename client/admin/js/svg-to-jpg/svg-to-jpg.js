@@ -21,11 +21,12 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
       }
     }
 
-    var photosToConvert = 0;
-    var photosConverted = 0;
-
-    var iter = projectData.photos.entries();
-    iteratePhotos(iter)
+    var allProjectPhotos = [];
+    for (var id in projectData.photos) {
+      allProjectPhotos.push(projectData.photos[id]);
+    }
+    var promises = allProjectPhotos.map(function(p) { return loadPhoto(p); });
+    Promise.all(promises)
     .then(function() {
       console.log('all loaded');
       generateBase64OfProject(svgElement, function(svgImage) {
@@ -36,19 +37,8 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
     });
   }
 
-  function iteratePhotos(iter) {
-    var iteration = iter.next();
-    if (iteration.done) {
-      return Promise.resolve();
-    }
-    var projectPhoto = iteration.value[1];
-    return loadPhoto(projectPhoto)
-    .then(function() {
-      return iteratePhotos(iter);
-    });
-  }
-
   function loadPhoto(projectPhoto) {
+    console.log('loadPhoto', projectPhoto.src);
     if (projectPhoto.base64 || !projectPhoto.src) {
       return Promise.resolve();
     }
