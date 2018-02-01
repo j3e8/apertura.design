@@ -56,10 +56,7 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
           reject(e);
         }
         tmpImg.onload = function(e) {
-          console.log('tmpImg.onload');
-
-          /*EXIF.getData(tmpImg, function() {
-            console.log('4');
+          EXIF.getData(tmpImg, function() {
             var orientation = EXIF.getTag(tmpImg, 'Orientation');
             switch (orientation) {
               case 3:
@@ -76,38 +73,34 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
                 projectPhoto.rotation = 0;
                 break;
             }
-            applyPhotoRotation(projectPhoto);
-            console.log('5');*/
-          /*});*/
-
-          // since these are loaded from URL the browser should handle the exif, right!???
-          projectPhoto.rotation = 0;
-          resolve();
+            applyPhotoExifRotation(projectPhoto);
+            resolve();
+          });
         }
         tmpImg.src = base64img;
       });
     });
   }
 
-  function applyPhotoRotation(projectPhoto) {
-    if (projectPhoto.rotation == 180) {
+  function applyPhotoExifRotation(projectPhoto) {
+    console.log('applyPhotoExifRotation', projectPhoto.rotation);
+
+    if (projectPhoto.element.getAttribute('transform')) {
+      var g1 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g1.setAttribute('transform', projectPhoto.element.getAttribute('transform'));
+      projectPhoto.image.parentNode.insertBefore(g1, projectPhoto.image);
+      projectPhoto.image.parentNode.removeChild(projectPhoto.image);
+      g1.appendChild(projectPhoto.image);
+    }
+
+    if (projectPhoto.rotation) {
       var cx = Number(projectPhoto.imageBounds.left) + projectPhoto.imageBounds.width / 2;
       var cy = Number(projectPhoto.imageBounds.top) + projectPhoto.imageBounds.height / 2;
       var rotate = "rotate(" + projectPhoto.rotation + ", " + cx + ", " + cy + ")";
       projectPhoto.image.setAttribute('transform', rotate);
     }
-    else if (projectPhoto.rotation == 90 || projectPhoto.rotation == 270) {
-      projectPhoto.image.setAttribute('x', 0);
-      projectPhoto.image.setAttribute('y', 0);
-      var w = parseFloat(projectPhoto.image.getAttribute('width'));
-      var h = parseFloat(projectPhoto.image.getAttribute('height'));
-      projectPhoto.image.setAttribute('width', h);
-      projectPhoto.image.setAttribute('height', w);
-      var x = Number(w) + (projectPhoto.shapeBounds.width - w) / 2;
-      var y = (projectPhoto.shapeBounds.height - h) / 2;
-      var translate = "translate(" + x + "," + y + ")";
-      var rotate = "rotate(" + projectPhoto.rotation + ", 0, 0)";
-      projectPhoto.image.setAttribute('transform', translate + ' ' + rotate);
+    else {
+      projectPhoto.image.removeAttribute('transform');
     }
   }
 
