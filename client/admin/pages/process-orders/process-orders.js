@@ -32,10 +32,10 @@ function($scope, $http, $location, $site, $rootScope, svgToJpg) {
         $scope.filename = response.data.results.filename;
         $scope.guid = response.data.results.guid;
         $scope.projectData = JSON.parse(response.data.results.projectData);
-        if (projectData.photos) {
-          for (var id in projectData.photos) {
+        if ($scope.projectData.photos) {
+          for (var id in $scope.projectData.photos) {
             var photoElement = $scope.svg.getElementById(id);
-            projectData.photos[id].element = photoElement;
+            $scope.projectData.photos[id].element = photoElement;
           }
         }
         $scope.orderItemId = response.data.results.orderItemId;
