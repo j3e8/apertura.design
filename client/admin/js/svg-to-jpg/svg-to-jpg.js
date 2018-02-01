@@ -145,8 +145,8 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
   }
 
   function generateBase64OfProject(svgElement, callback) {
-    console.log('final svg element', svgElement);
     var svgText = svgElement.outerHTML;
+    console.log('final svg text', svgText);
     var base64Svg = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgText);
 
     var svgimage = new Image();
