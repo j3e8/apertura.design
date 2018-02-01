@@ -32,12 +32,6 @@ function($scope, $http, $location, $site, $rootScope, svgToJpg) {
         $scope.filename = response.data.results.filename;
         $scope.guid = response.data.results.guid;
         $scope.projectData = JSON.parse(response.data.results.projectData);
-        if ($scope.projectData.photos) {
-          for (var id in $scope.projectData.photos) {
-            var photoElement = $scope.svg.getElementById(id);
-            $scope.projectData.photos[id].element = photoElement;
-          }
-        }
         $scope.orderItemId = response.data.results.orderItemId;
         $scope.loadTemplateProduct();
         loadOrder($scope.orderId);
@@ -62,6 +56,12 @@ function($scope, $http, $location, $site, $rootScope, svgToJpg) {
         adjustCanvasCorners($scope.svg);
         if ($scope.templateProduct.edge == 'wrap') {
           adjustWrappedEdges($scope.svg);
+        }
+        if ($scope.projectData.photos) {
+          for (var id in $scope.projectData.photos) {
+            var photoElement = $scope.svg.getElementById(id);
+            $scope.projectData.photos[id].element = photoElement;
+          }
         }
       });
     }, function(error) {
