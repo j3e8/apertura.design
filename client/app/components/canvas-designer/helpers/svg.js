@@ -124,7 +124,7 @@ Svg.calculateSvgPathBounds = function(element) {
     bottom: undefined
   };
 
-  var commands = getSvgPathCommands(element);
+  var commands = Svg.getSvgPathCommands(element);
   commands.forEach(function(cmd) {
     switch (cmd.command) {
       case 'a':
