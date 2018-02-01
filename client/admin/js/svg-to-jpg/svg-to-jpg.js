@@ -145,9 +145,20 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
   }
 
   function generateBase64OfProject(svgElement, callback) {
+    var floater = document.createElement("div");
+    floater.style.position = "fixed";
+    floater.style.top = "0";
+    floater.style.left = "0";
+    floater.style.right = "0";
+    floater.style.bottom = "0";
+    floater.style.backgroundColor = "#fff";
+    floater.style.opacity = "0.8";
+    floater.style.zIndex = "500";
+    floater.innerHTML = svgElement.outerHTML;
+    document.body.appendChild(floater);
+
     var svgText = svgElement.outerHTML;
     var base64Svg = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgText);
-
     var svgimage = new Image();
     svgimage.onload = function(e) {
       if (callback) {
