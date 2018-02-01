@@ -41,6 +41,8 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
                 console.error('error loading image', e);
               }
               tmpImg.onload = function(e) {
+                console.log('tmpImg.onload', tmpImg);
+
                 /*EXIF.getData(tmpImg, function() {
                   console.log('4');
                   var orientation = EXIF.getTag(tmpImg, 'Orientation');
@@ -62,8 +64,12 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
                   applyPhotoRotation(projectPhoto);
                   console.log('5');*/
 
+                  // since these are loaded from URL the browser should handle the exif, right!???
+                  projectPhoto.rotation = 0;
+
                   photosConverted++;
                   if (photosConverted == photosToConvert) {
+                    console.log('all loaded');
                     generateBase64OfProject(svgElement, function(svgImage) {
                       if (callback) {
                         callback(svgImage);
@@ -223,6 +229,8 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
     }
 
     var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     if (size.height > size.width) {
       ctx.save();
       ctx.rotate(Math.PI/2);
