@@ -33,6 +33,8 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
             var url = projectPhoto.src;
             var thumbnailSrc = projectPhoto.thumbnailSrc;
 
+            console.log('loadHiResPhoto', thumbnailSrc);
+
             loadHiResPhoto(url, thumbnailSrc, function(base64img) {
               projectPhoto.image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', base64img);
 
@@ -41,7 +43,7 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
                 console.error('error loading image', e);
               }
               tmpImg.onload = function(e) {
-                console.log('tmpImg.onload', tmpImg);
+                console.log('tmpImg.onload');
 
                 /*EXIF.getData(tmpImg, function() {
                   console.log('4');
