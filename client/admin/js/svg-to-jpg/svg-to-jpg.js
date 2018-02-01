@@ -49,6 +49,10 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
 
       loadHiResPhoto(url, thumbnailSrc, function(base64img) {
         projectPhoto.image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', base64img);
+        projectPhoto.image.setAttribute('width', projectPhoto.imageBounds.width + "px");
+        projectPhoto.image.setAttribute('height', projectPhoto.imageBounds.height + "px");
+        projectPhoto.image.setAttribute('x', projectPhoto.imageBounds.left + "px");
+        projectPhoto.image.setAttribute('y', projectPhoto.imageBounds.top + "px");
 
         var tmpImg = new Image();
         tmpImg.onerror = function(e) {

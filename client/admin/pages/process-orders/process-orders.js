@@ -76,7 +76,7 @@ function($scope, $http, $location, $site, $rootScope, svgToJpg) {
     var broadcast = {
       projectData: $scope.projectData,
       guid: $scope.guid,
-      svg: /*$scope.svgText,*/ document.getElementById('artboard').innerHTML,
+      svg: document.getElementById('artboard').innerHTML,
       orderItemId: $scope.orderItemId
     };
     $rootScope.$broadcast("processDesign", broadcast);
