@@ -96,16 +96,12 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
     if (projectPhoto.rotation) {
       var cx = Number(projectPhoto.imageBounds.left) + projectPhoto.imageBounds.width / 2;
       var cy = Number(projectPhoto.imageBounds.top) + projectPhoto.imageBounds.height / 2;
-
       var rotate = "rotate(" + projectPhoto.rotation + ", " + cx + ", " + cy + ")";
-      var g2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      g2.setAttribute('transform', rotate);
-      projectPhoto.image.parentNode.insertBefore(g2, projectPhoto.image);
-      projectPhoto.image.parentNode.removeChild(projectPhoto.image);
-      g2.appendChild(projectPhoto.image);
-      // projectPhoto.image.setAttribute('transform', rotate);
+      projectPhoto.image.setAttribute('transform', rotate);
     }
-    projectPhoto.image.removeAttribute('transform');
+    else {
+      projectPhoto.image.removeAttribute('transform');
+    }
   }
 
   function loadHiResPhoto(url, thumbnailSrc, callback) {
