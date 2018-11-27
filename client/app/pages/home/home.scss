@@ -15,27 +15,43 @@
     }
   }
 
-  .hero {
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 620px;
-    position: relative;
-
-    @media (max-width: 1600px) {
-      height: 600px;
+  .hero-row {
+    @media (max-width: 800px) {
+      .flex-cell {
+        flex: 0 0 100%;
+        -webkit-flex: 0 0 100%;
+      }	
     }
 
-    @media (max-width: 1200px) {
-      height: 480px;
+    .right-cell {
+	background-color: #3bb8af;
+      color:  #fff;
+	& > div {
+		padding: 30px;
+		text-align: center;
+		font-size: 18px;
+		line-height: 1.4;
+		text-align: center;
+	}
     }
 
-    @media (max-width: 720px) {
-      height: 300px;
-    }
-    @media (max-width: 480px) {
-      height: 200px;
-    }
+	  .hero {
+	    background-position: center center;
+	    background-repeat: no-repeat;
+	    background-size: cover;
+	    min-height: 400px;
+		height: 100%;
+	    position: relative;
+
+	    @media (max-width: 1600px) {
+	      min-height: 300px;
+	    }
+
+	    @media (max-width: 1200px) {
+	      min-height: 300px;
+	    }
+
+	  }
   }
   #canvas-hero {
     background-image: url(assets/images/home/canvas-prints5.jpg);
