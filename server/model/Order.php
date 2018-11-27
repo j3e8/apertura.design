@@ -109,7 +109,7 @@ class Order {
     $_externalOrderId = db_escape($externalOrderId);
     $sql = "SELECT o.id, o.userId, o.dateOrdered, o.discountCode, o.discountAmount, o.salesTax, o.shippingAmount
       FROM orders AS o
-      WHERE o.externalOrderId=$_externalOrderId";
+      WHERE o.externalOrderId='$_externalOrderId'";
     $results = db_query($sql);
     $orderInfo = db_fetch_assoc($results);
     return $orderInfo;
