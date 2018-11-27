@@ -93,7 +93,13 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
       g1.appendChild(projectPhoto.image);
     }
 
-    if (projectPhoto.rotation) {
+    if (projectPhoto.rotation == 90 || projectPhoto.rotation == 270) {
+      var cx = Number(projectPhoto.imageBounds.left) + projectPhoto.imageBounds.width / 2;
+      var cy = Number(projectPhoto.imageBounds.top) + projectPhoto.imageBounds.height / 2;
+      var rotate = "rotate(" + projectPhoto.rotation + ", " + cx + ", " + cy + ")";
+      projectPhoto.image.setAttribute('transform', rotate);
+    }
+    else if (projectPhoto.rotation == 180) {
       var cx = Number(projectPhoto.imageBounds.left) + projectPhoto.imageBounds.width / 2;
       var cy = Number(projectPhoto.imageBounds.top) + projectPhoto.imageBounds.height / 2;
       var rotate = "rotate(" + projectPhoto.rotation + ", " + cx + ", " + cy + ")";
@@ -145,18 +151,6 @@ app.service('svgToJpg', ['$rootScope', '$http', function($rootScope, $http) {
   }
 
   function generateBase64OfProject(svgElement, callback) {
-    var floater = document.createElement("div");
-    floater.style.position = "fixed";
-    floater.style.top = "0";
-    floater.style.left = "0";
-    floater.style.right = "0";
-    floater.style.bottom = "0";
-    floater.style.backgroundColor = "#fff";
-    floater.style.opacity = "0.8";
-    floater.style.zIndex = "500";
-    floater.innerHTML = svgElement.outerHTML;
-    document.body.appendChild(floater);
-
     var svgText = svgElement.outerHTML;
     var base64Svg = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgText);
     var svgimage = new Image();
